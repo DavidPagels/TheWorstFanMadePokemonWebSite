@@ -52,19 +52,21 @@ io.sockets.on('connection', function (socket){
 
     socket.on('getPicture', function(id){
         console.log('id')
-        var label = connection.query('SELECT imgUrl FROM pokemon WHERE id=' + id);
+        var label = connection.query('SELECT imgUrl, dexDat FROM pokemon WHERE id=' + id);
         var theUrl;
+        var theDat;
         label.on('error', function(err){
             console.log('error:', err);
         });
 
         label.on('result', function(result){
-            theUrl = result.imgUrl
+            theUrl = result.imgUrl;
+            theDat = result.dexDat;
             console.log(theUrl);
         });
 
         label.on('end', function(result){
-            socket.emit('setPicture', theUrl);
+            socket.emit('setPicture', theUrl, theDat);
             //callback();
         });
     })

@@ -30,9 +30,10 @@
             getPokeInfo();
         });
 
-        iosocket.on('setPicture', function(imgUrl){
+        iosocket.on('setPicture', function(imgUrl, dexDat){
             console.log('in setpic')
             $('#curPokemon').html('<img src="' + imgUrl + '">')
+            $('#curDescription').html('<h3>' + dexDat + '</h3>')
         });
 
     </script>
@@ -40,11 +41,12 @@
 <body class="container">
 
 <div class="row-fluid">
-<h1 class="page-header">Welcome to the worst fan made Pokemon Website!</h1>
-<!--<input type="button" class='btn btn-default btn-success' onclick="dispPoke()" value="do stuff">-->
-<div id="theContents"></div>
-<select id="pokemonDropDown" onChange="getPokeInfo()"></select>
-<div id="curPokemon" class="span4 offset1"></div>
+    <h1 class="page-header">Welcome to the worst fan made Pokemon Website!</h1>
+    <!--<input type="button" class='btn btn-default btn-success' onclick="dispPoke()" value="do stuff">-->
+    <div id="theContents"></div>
+    <select id="pokemonDropDown" onChange="getPokeInfo()"></select><br><br><br>
+    <div id="curPokemon" class="col-md-6 col-md-offset-3"></div><br>
+    <div id="curDescription" class="col-md-12"></div>
 </div>
 </body>
 </html>
