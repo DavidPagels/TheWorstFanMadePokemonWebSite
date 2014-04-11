@@ -1,3 +1,4 @@
+'use strict';
 var express = require('express');
 var mysql = require('mysql');
 var fs = require('fs');
@@ -20,18 +21,21 @@ app.get('/', function(req, res){
     console.log('in scrape')
     var index = 0;
     var theLoop = setInterval(function(){
-        pokemon = PokeArray[index];
+        var pokemon = PokeArray[index];
         var url = 'http://pokemondb.net/pokedex/' + pokemon;
 
         request(url, function(error, response, html){
             if(!error){
                 var $ = cheerio.load(html);
 
-                $('.vitals-table:not(:contains("EV yield"), :contains("National"), :contains("Egg cycles"), :contains("Sp. Atk"))').first().filter(function(){
+                $('.figure').first().filter(function(){
                     var data = $(this);
-                    var catchRate = data.children().children().children().eq(1);
-                    console.log(pokemon + " " + catchRate.text())
-                    connection.query('UPDATE pokemon SET dexDat="' + catchRate.text() + '" WHERE name="' + pokemon + '"');
+                    var catchRate = data.children().first().attr('src');
+                   // var pattern = /(.*) lbs/;
+                    //catchRate = catchRate.text().match(pattern)
+                    //var feet = catchRate;
+                    console.log(pokemon + " " + catchRate);
+                    connection.query('UPDATE pokemon SET imgUrl="' + catchRate + '" WHERE name="' + pokemon + '"');
                 })
 
             }

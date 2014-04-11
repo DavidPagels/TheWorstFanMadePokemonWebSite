@@ -4,7 +4,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="http://bulbapedia.bulbagarden.net/wiki/Pikachu_(Pok%C3%A9mon)?callback=getSite"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script>
         var iosocket = io.connect('http://localhost:3000');
         function getSite(theData){
@@ -14,11 +16,35 @@
             iosocket.emit('doDatabaseStuff');
         }
 
+        function getPokeInfo(){
+            console.log('in pokeinfo' + " " + $('#pokemonDropDown option:selected').text());
+            $('#theContents').text($('#pokemonDropDown option:selected').val())
+            iosocket.emit('getPicture', $('#pokemonDropDown option:selected').val())
+        }
+
+        iosocket.on('updateDropDown', function(pokemon, ids){
+            for(i = 0; i < pokemon.length; i++){
+                console.log(pokemon[i]);
+                $('#pokemonDropDown').append('<option value="' + ids[i] + '">' + pokemon[i] + '</option>');
+            }
+            getPokeInfo();
+        });
+
+        iosocket.on('setPicture', function(imgUrl){
+            console.log('in setpic')
+            $('#curPokemon').html('<img src="' + imgUrl + '">')
+        });
+
     </script>
 </head>
-<body>
-<input type="button" onclick="dispPoke()" value="do stuff">
-<!--<iframe src='http://bulbapedia.bulbagarden.net/wiki/Pikachu_(Pok%C3%A9mon)' id='scrape'></iframe>-->
+<body class="container">
+
+<div class="row-fluid">
+<h1 class="page-header">Welcome to the worst fan made Pokemon Website!</h1>
+<!--<input type="button" class='btn btn-default btn-success' onclick="dispPoke()" value="do stuff">-->
 <div id="theContents"></div>
+<select id="pokemonDropDown" onChange="getPokeInfo()"></select>
+<div id="curPokemon" class="span4 offset1"></div>
+</div>
 </body>
 </html>
