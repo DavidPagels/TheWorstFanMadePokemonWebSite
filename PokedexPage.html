@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
@@ -10,9 +11,20 @@
     <script>
         var iosocket = io.connect('http://localhost:3000');
         var availableTags;
+
+
+        $(function(){
+            $('#pokemonSelector').keydown(function(event) {
+                if (event.keyCode == 13) {
+                    getPokeInfo();
+                }
+            })
+        });
+
         function getSite(theData){
             console.log(theData)
         }
+
         function dispPoke(){
             iosocket.emit('doDatabaseStuff');
         }
@@ -26,16 +38,26 @@
         iosocket.on('updateDropDown', function(pokemon){
             availableTags = pokemon;
             console.log(pokemon);
-            $( "#pokemonSelector" ).autocomplete({
-                source: availableTags
-            });
+            $("#pokemonSelector").autocomplete({source: availableTags, messages: {
+                noResults: '',
+                results: function() {}
+            }});
             getPokeInfo();
         });
 
         iosocket.on('setPicture', function(imgUrl, dexDat){
             console.log('in setpic')
-            $('#curPokemon').html('<img src="' + imgUrl + '">')
-            $('#curDescription').html('<h3>' + dexDat + '</h3>')
+            console.log(dexDat)
+            if(dexDat != null){
+                console.log('in1')
+                $('#curPokemon').fadeIn();
+                $('#curPokemon').html('<img src="' + imgUrl + '">')
+                $('#curDescription').html('<h3>' + dexDat + '</h3>')
+            } else {
+                console.log('in2')
+                $('#curPokemon').hide();
+                $('#curDescription').html('Please enter a pokemon to see its description.');
+            }
         });
 
     </script>
@@ -50,10 +72,12 @@
         });
     </script>
     <!--<input type="button" class='btn btn-default btn-success' onclick="dispPoke()" value="do stuff">-->
-    <div id="theContents"></div>
-    <div class="ui-widget">
-    <input id='pokemonSelector' onChange="getPokeInfo()"/>
-        </div>
+    <div>
+        <input type='text' id='pokemonSelector' class="ui-autocomplete"/>
+        <button onClick="getPokeInfo()">Enter</button>
+    </div>
+    <div class="col-md-4 col-mid-offset-4"></div>
+    <h2 id="theContents"></h2>
     <div id="curPokemon" class="col-md-6 col-md-offset-3"></div><br>
     <div id="curDescription" class="col-md-12"></div>
 </div>
