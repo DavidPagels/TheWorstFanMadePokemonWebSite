@@ -1,15 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script>
+        var iosocket = io.connect('http://localhost:3000');
+
+        function checkFree(){
+            console.log($('#username').val());
+            iosocket.emit('checkTrainers', $('#username').val());
+        }
+
+        function getTrainer(){
+
+        }
+
+        function createTrainer(){
+            $('.initialTags').fadeOut(function(){$('.secondaryTags').fadeIn()})
+
+        }
+        function insertTrainer(){
+            checkFree();
+            if($('#allowedUser').text() == 'Username Taken!'){
+                alert('Choose a different Username!')
+            } else {
+                iosocket.emit('addUser', $('#username').val(), $('#password').val(), $('#trainerName').val())
+            }
+        }
+
+        iosocket.on('checkResult', function(result){
+            if(!result){
+                $('#allowedUser').html('');
+            } else {
+                $('#allowedUser').html('Username Taken!');
+            }
+        })
+    </script>
     <title></title>
 </head>
-<body>
-    <div>THIS IS THE HOME PAGE</div>
+<body class="container">
+<div id="navAndHeader"></div>
+<script type="text/javascript">
+    $(function() {
+        $("#navAndHeader").load("/template"); // add "/"
+    });
+</script>
+    <h4>Enter your username and password to sign in or enter a new user name and password to create a trainer.</h4>
     <p>Username:</p>
-    <input type="text" id="username">
+    <input type="text" id="username" onChange="checkFree()"><div id="allowedUser"></div>
     <p>Password:</p>
-    <input type="text" id="password">
-    <button>Sign In</button>
+    <input type="password" id="password">
+    <p class="secondaryTags" style='display: none;'>Trainer Name:</p>
+    <input class='secondaryTags' style='display: none;' type="text" id="trainerName">
+    <button class='initialTags' onClick="getTrainer()">Sign In</button>
+    <div class="initialTags">or</div>
+    <button class='initialTags' onClick="createTrainer()">Create Trainer</button>
+    <button class='secondaryTags' style='display: none;' onClick="insertTrainer()">Create</button>
 
     <p>Or try the <a href="/Pokedex">Pokedex</a>!</p>
 </body>

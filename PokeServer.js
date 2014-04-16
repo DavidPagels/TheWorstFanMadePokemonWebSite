@@ -24,7 +24,10 @@ function handleRequest(request, response){
             theUrl = 'HomePage.html';
             break;
         case '/Pokedex':
-            theUrl = 'MainPage.html'
+            theUrl = 'PokedexPage.html'
+            break;
+        case '/template':
+            theUrl = 'NavBarAndHeader.html'
             break;
     }
     fs.readFile(theUrl, function(err, page) {
@@ -52,7 +55,7 @@ io.sockets.on('connection', function (socket){
 
     socket.on('getPicture', function(id){
         console.log('id')
-        var label = connection.query('SELECT imgUrl, dexDat FROM pokemon WHERE id=' + id);
+        var label = connection.query('SELECT imgUrl, dexDat FROM pokemon WHERE name="' + id + '"');
         var theUrl;
         var theDat;
         label.on('error', function(err){
@@ -70,25 +73,31 @@ io.sockets.on('connection', function (socket){
             //callback();
         });
     })
+    socket.on('checkTrainers', function(username){
+        var retVal
+        var numrows = connection.query('SELECT count(username) AS isTaken FROM trainer WHERE username="' + username + '"');
+
+        numrows.on('error', function(err){
+            console.log('error:', err);
+        });
+
+        numrows.on('result', function(result){
+            retVal = result.isTaken
+            console.log(result.isTaken + '   asdfsd');
+        });
+
+        numrows.on('end', function(result){
+            socket.emit('checkResult', retVal);
+            //callback();
+        });
+    })
+
+    socket.on('addUser', function(username, password, name){
+        connection.query('INSERT INTO trainer (username, password, name) VALUES("' + username + '", "' + password + '", "' + name + '")');
+
+    })
 });
 
 function update(socket){
-    var retPokemon = new Array();
-    var retIds = new Array()
-    var label = connection.query('SELECT id, name FROM pokemon');
-
-    label.on('error', function(err){
-        console.log('error:', err);
-    });
-
-    label.on('result', function(result){
-        retPokemon.push(result.name);
-        retIds.push(result.id);
-    });
-
-    label.on('end', function(result){
-        socket.emit('updateDropDown', retPokemon, retIds);
-        //callback();
-    });
-
+   socket.emit('updateDropDown', PokeArray);
 }

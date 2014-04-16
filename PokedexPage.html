@@ -9,6 +9,7 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script>
         var iosocket = io.connect('http://localhost:3000');
+        var availableTags;
         function getSite(theData){
             console.log(theData)
         }
@@ -17,16 +18,17 @@
         }
 
         function getPokeInfo(){
-            console.log('in pokeinfo' + " " + $('#pokemonDropDown option:selected').text());
-            $('#theContents').text($('#pokemonDropDown option:selected').val())
-            iosocket.emit('getPicture', $('#pokemonDropDown option:selected').val())
+            console.log('in pokeinfo' + " " + $('#pokemonSelector').val());
+            $('#theContents').text($('#pokemonSelector').val())
+            iosocket.emit('getPicture', $('#pokemonSelector').val())
         }
 
-        iosocket.on('updateDropDown', function(pokemon, ids){
-            for(i = 0; i < pokemon.length; i++){
-                console.log(pokemon[i]);
-                $('#pokemonDropDown').append('<option value="' + ids[i] + '">' + pokemon[i] + '</option>');
-            }
+        iosocket.on('updateDropDown', function(pokemon){
+            availableTags = pokemon;
+            console.log(pokemon);
+            $( "#pokemonSelector" ).autocomplete({
+                source: availableTags
+            });
             getPokeInfo();
         });
 
@@ -41,10 +43,17 @@
 <body class="container">
 
 <div class="row-fluid">
-    <h1 class="page-header">Welcome to the worst fan made Pokemon Website!</h1>
+    <div id="navAndHeader"></div>
+    <script type="text/javascript">
+        $(function() {
+            $("#navAndHeader").load("/template"); // add "/"
+        });
+    </script>
     <!--<input type="button" class='btn btn-default btn-success' onclick="dispPoke()" value="do stuff">-->
     <div id="theContents"></div>
-    <select id="pokemonDropDown" onChange="getPokeInfo()"></select><br><br><br>
+    <div class="ui-widget">
+    <input id='pokemonSelector' onChange="getPokeInfo()"/>
+        </div>
     <div id="curPokemon" class="col-md-6 col-md-offset-3"></div><br>
     <div id="curDescription" class="col-md-12"></div>
 </div>
