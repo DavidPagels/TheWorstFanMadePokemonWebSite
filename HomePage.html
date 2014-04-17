@@ -33,7 +33,7 @@
         }
 
         iosocket.on('checkResult', function(result){
-            if(!result){
+            if(result == 0){
                 $('#allowedUser').html('');
             } else {
                 $('#allowedUser').html('Username Taken!');

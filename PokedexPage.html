@@ -30,8 +30,6 @@
         }
 
         function getPokeInfo(){
-            console.log('in pokeinfo' + " " + $('#pokemonSelector').val());
-            $('#theContents').text($('#pokemonSelector').val())
             iosocket.emit('getPicture', $('#pokemonSelector').val())
         }
 
@@ -45,17 +43,24 @@
             getPokeInfo();
         });
 
-        iosocket.on('setPicture', function(imgUrl, dexDat){
-            console.log('in setpic')
+        iosocket.on('setPokeData', function(name, imgUrl, dexDat, heightFt, heightIn, weight){
             console.log(dexDat)
             if(dexDat != null){
-                console.log('in1')
+
+                $('#theContents').text(name);
                 $('#curPokemon').fadeIn();
-                $('#curPokemon').html('<img src="' + imgUrl + '">')
-                $('#curDescription').html('<h3>' + dexDat + '</h3>')
+                $('#curHeight').fadeIn();
+                $('#curWeight').fadeIn();
+                $('#curPokemon').html('<img src="' + imgUrl + '">');
+                $('#curDescription').html('<h3>' + dexDat + '</h3>');
+                $('#curHeight').html("Height: " + heightFt + "' " + heightIn + '" ');
+                $('#curWeight').html("Weight: " + weight + "lbs");
+
             } else {
                 console.log('in2')
                 $('#curPokemon').hide();
+                $('#curHeight').hide();
+                $('#curWeight').hide();
                 $('#curDescription').html('Please enter a pokemon to see its description.');
             }
         });
@@ -80,6 +85,8 @@
     <h2 id="theContents"></h2>
     <div id="curPokemon" class="col-md-6 col-md-offset-3"></div><br>
     <div id="curDescription" class="col-md-12"></div>
+    <div id="curHeight"></div>
+    <div id="curWeight"></div>
 </div>
 </body>
 </html>

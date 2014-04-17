@@ -28,14 +28,18 @@ app.get('/', function(req, res){
             if(!error){
                 var $ = cheerio.load(html);
 
-                $('.figure').first().filter(function(){
+                $('.vitals-table').first().filter(function(){
                     var data = $(this);
-                    var catchRate = data.children().first().attr('src');
+                    data.children().children().eq(1).children().eq(1).children().each(function()
+                    {
+                        console.log($(this).text())
+                        connection.query('INSERT INTO pokeTypes (pokeId, typeId) VALUES ((Select id from pokemon where name = "' + pokemon + '"), (select id from types where type = "' + $(this).text() + '"))');
+                    });
                    // var pattern = /(.*) lbs/;
                     //catchRate = catchRate.text().match(pattern)
                     //var feet = catchRate;
-                    console.log(pokemon + " " + catchRate);
-                    connection.query('UPDATE pokemon SET imgUrl="' + catchRate + '" WHERE name="' + pokemon + '"');
+                    //console.log(pokemon + " " + type);
+//                    connection.query('INSERT INTO pokeTypes (pokeId, typeId) VALUES ((Select id from pokemon where name = ' + name + '), (select id from types where type = ' + type + '))');
                 })
 
             }

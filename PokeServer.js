@@ -55,21 +55,30 @@ io.sockets.on('connection', function (socket){
 
     socket.on('getPicture', function(id){
         console.log('id')
-        var label = connection.query('SELECT imgUrl, dexDat FROM pokemon WHERE name="' + id + '"');
+        var label = connection.query('SELECT name, imgUrl, dexDat, heightFt, heightIn, weight FROM pokemon WHERE name="' + id + '"');
+        var theName;
         var theUrl;
         var theDat;
+        var theHeightFt;
+        var theHeightIn;
+        var theWeight;
         label.on('error', function(err){
             console.log('error:', err);
         });
 
         label.on('result', function(result){
+            theName = result.name;
             theUrl = result.imgUrl;
             theDat = result.dexDat;
+            theHeightFt = result.heightFt;
+            theHeightIn = result.heightIn;
+            theWeight = result.weight;
+
             console.log(theUrl);
         });
 
         label.on('end', function(result){
-            socket.emit('setPicture', theUrl, theDat);
+            socket.emit('setPokeData', theName, theUrl, theDat, theHeightFt, theHeightIn, theWeight);
             //callback();
         });
     })
