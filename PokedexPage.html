@@ -5,6 +5,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
@@ -38,7 +39,7 @@
             console.log(pokemon);
             $("#pokemonSelector").autocomplete({source: availableTags, messages: {
                 noResults: '',
-                results: function() {}
+                        results: function() {}
             }});
             getPokeInfo();
         });
@@ -48,9 +49,7 @@
             if(dexDat != null){
 
                 $('#theContents').text(name);
-                $('#curPokemon').fadeIn();
-                $('#curHeight').fadeIn();
-                $('#curWeight').fadeIn();
+                $('.pokeDat').fadeIn();
                 $('#curPokemon').html('<img src="' + imgUrl + '">');
                 $('#curDescription').html('<h3>' + dexDat + '</h3>');
                 $('#curHeight').html("Height: " + heightFt + "' " + heightIn + '" ');
@@ -58,9 +57,7 @@
 
             } else {
                 console.log('in2')
-                $('#curPokemon').hide();
-                $('#curHeight').hide();
-                $('#curWeight').hide();
+                $('.pokeDat').hide();
                 $('#curDescription').html('Please enter a pokemon to see its description.');
             }
         });
@@ -77,16 +74,16 @@
         });
     </script>
     <!--<input type="button" class='btn btn-default btn-success' onclick="dispPoke()" value="do stuff">-->
-    <div>
-        <input type='text' id='pokemonSelector' class="ui-autocomplete"/>
+    <div class="row-fluid">
+        <input type='text' id='pokemonSelector'/>
         <button onClick="getPokeInfo()">Enter</button>
     </div>
     <div class="col-md-4 col-mid-offset-4"></div>
-    <h2 id="theContents"></h2>
-    <div id="curPokemon" class="col-md-6 col-md-offset-3"></div><br>
+    <h2 id="theContents" class="pokeDat"></h2>
+    <div id="curPokemon" class="pokeDat col-md-6 col-md-offset-3"></div><br>
     <div id="curDescription" class="col-md-12"></div>
-    <div id="curHeight"></div>
-    <div id="curWeight"></div>
+    <div id="curHeight" class="pokeDat"></div>
+    <div id="curWeight" class="pokeDat"></div>
 </div>
 </body>
 </html>
