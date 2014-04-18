@@ -29,6 +29,9 @@ function handleRequest(request, response){
         case '/template':
             theUrl = 'NavBarAndHeader.html'
             break;
+        case '/TrainerPage':
+            theUrl = 'TrainerPage.html'
+            break;
     }
     fs.readFile(theUrl, function(err, page) {
         response.writeHead(200, {'Content-Type': 'text/html'});
@@ -99,6 +102,28 @@ io.sockets.on('connection', function (socket){
             socket.emit('checkResult', retVal);
             //callback();
         });
+    })
+
+    socket.on('checkCredentials', function(username, password){
+        var correctPass = false;
+        var password = connection.query('SELECT password FROM trainer WHERE username=' + username)
+
+        password.on('error', function(err){
+            console.log('error:', err);
+        });
+
+        password.on('result', function(result){
+            console.log(result.password)
+            console.log(password)
+            if(result.password === password)
+                correctPass = true;
+        });
+
+        password.on('end', function(result){
+            socket.emit('logIn', correctPass);
+            //callback();
+        });
+
     })
 
     socket.on('addUser', function(username, password, name){

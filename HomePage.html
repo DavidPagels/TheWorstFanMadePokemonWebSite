@@ -9,20 +9,29 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script>
         var iosocket = io.connect('http://localhost:3000');
+        var creating = false;
 
         function checkFree(){
             console.log($('#username').val());
-            iosocket.emit('checkTrainers', $('#username').val());
-        }
-
-        function getTrainer(){
-
+            if(creating)
+                iosocket.emit('checkTrainers', $('#username').val());
         }
 
         function createTrainer(){
             $('.initialTags').fadeOut(function(){$('.secondaryTags').fadeIn()})
-
+            creating = true;
+            checkFree();
         }
+
+        function getTrainer(){
+            iosocket.emit('checkCredentials', $('#username').val(), $('#password').val());
+        }
+
+        function cancelCreate(){
+            creating = false;
+            $('.secondaryTags').fadeOut(function(){$('.initialTags').fadeIn()})
+        }
+
         function insertTrainer(){
             checkFree();
             if($('#allowedUser').text() == 'Username Taken!'){
@@ -39,6 +48,14 @@
                 $('#allowedUser').html('Username Taken!');
             }
         })
+
+        iosocket.on('logIn', function(correctPass){
+            console.log(correctPass);
+            if(correctPass)
+                window.location.href = '/TrainerPage';
+            else
+                alert('Incorrect Password!');
+        })
     </script>
     <title></title>
 </head>
@@ -51,15 +68,16 @@
 </script>
     <h4>Enter your username and password to sign in or enter a new user name and password to create a trainer.</h4>
     <p>Username:</p>
-    <input type="text" id="username" onChange="checkFree()"><div id="allowedUser"></div>
+    <input type="text" id="username" onChange="checkFree()"><div id="allowedUser" class="secondaryTags"></div>
     <p>Password:</p>
     <input type="password" id="password">
     <p class="secondaryTags" style='display: none;'>Trainer Name:</p>
     <input class='secondaryTags' style='display: none;' type="text" id="trainerName">
-    <button class='initialTags' onClick="getTrainer()">Sign In</button>
+    <button class='initialTags' onClick="getTrainer()" >Sign In</button>
     <div class="initialTags">or</div>
     <button class='initialTags' onClick="createTrainer()">Create Trainer</button>
     <button class='secondaryTags' style='display: none;' onClick="insertTrainer()">Create</button>
+    <button class="secondaryTags" style='display: none;' onClick="cancelCreate()">Cancel</button>
 
     <p>Or try the <a href="/Pokedex">Pokedex</a>!</p>
 </body>
