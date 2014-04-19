@@ -49,10 +49,13 @@
             }
         })
 
-        iosocket.on('logIn', function(correctPass){
+        iosocket.on('logIn', function(correctPass, trainerId){
             console.log(correctPass);
-            if(correctPass)
+            if(correctPass){
                 window.location.href = '/TrainerPage';
+                console.log(trainerId)
+                document.cookie = "trainerID=" + trainerId + "; path='/'";
+            }
             else
                 alert('Incorrect Password!');
         })

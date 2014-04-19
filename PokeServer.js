@@ -85,6 +85,7 @@ io.sockets.on('connection', function (socket){
             //callback();
         });
     })
+
     socket.on('checkTrainers', function(username){
         var retVal
         var numrows = connection.query('SELECT count(username) AS isTaken FROM trainer WHERE username="' + username + '"');
@@ -104,9 +105,10 @@ io.sockets.on('connection', function (socket){
         });
     })
 
-    socket.on('checkCredentials', function(username, password){
+    socket.on('checkCredentials', function(username, pass){
         var correctPass = false;
-        var password = connection.query('SELECT password FROM trainer WHERE username=' + username)
+        var trainerId;
+        var password = connection.query('SELECT trainerID, password FROM trainer WHERE username="' + username + '"')
 
         password.on('error', function(err){
             console.log('error:', err);
@@ -114,13 +116,17 @@ io.sockets.on('connection', function (socket){
 
         password.on('result', function(result){
             console.log(result.password)
-            console.log(password)
-            if(result.password === password)
+            console.log(pass)
+            correctPass = false;
+            if(result.password === pass){
+                trainerId = result.trainerID
                 correctPass = true;
+            }
+            console.log(correctPass)
         });
 
         password.on('end', function(result){
-            socket.emit('logIn', correctPass);
+            socket.emit('logIn', correctPass, trainerId);
             //callback();
         });
 
