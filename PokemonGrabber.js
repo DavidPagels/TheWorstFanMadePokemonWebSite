@@ -20,27 +20,33 @@ app.get('/', function(req, res){
 
     console.log('in scrape')
     var index = 0;
-    var theLoop = setInterval(function(){
+    //var theLoop = setInterval(function(){
         var pokemon = PokeArray[index];
-        var url = 'http://pokemondb.net/pokedex/' + pokemon;
+        var url = 'http://bulbapedia.bulbagarden.net/wiki/List_of_moves';
 
         request(url, function(error, response, html){
             if(!error){
                 var $ = cheerio.load(html);
+                $('tr').each(function (){
+                    var stat = $(this).children('td').eq(0).text();
+                    //connection.query('UPDATE pokemon SET expYield=' + stat + 'WHERE id=' + Math.ceil(index));
+                    console.log(stat);
+                })
 
-                $('.vitals-table').first().filter(function(){
-                    var data = $(this);
-                    data.children().children().eq(1).children().eq(1).children().each(function()
-                    {
-                        console.log($(this).text())
-                        connection.query('INSERT INTO pokeTypes (pokeId, typeId) VALUES ((Select id from pokemon where name = "' + pokemon + '"), (select id from types where type = "' + $(this).text() + '"))');
-                    });
+
+
+//                    var data = $(this);
+//                    data.children().children().eq(1).children().eq(1).children().each(function()
+//                    {
+//                        console.log($(this).text())
+//                        connection.query('INSERT INTO pokeTypes (pokeId, typeId) VALUES ((Select id from pokemon where name = "' + pokemon + '"), (select id from types where type = "' + $(this).text() + '"))');
+//                    });
                    // var pattern = /(.*) lbs/;
                     //catchRate = catchRate.text().match(pattern)
                     //var feet = catchRate;
                     //console.log(pokemon + " " + type);
 //                    connection.query('INSERT INTO pokeTypes (pokeId, typeId) VALUES ((Select id from pokemon where name = ' + name + '), (select id from types where type = ' + type + '))');
-                })
+               // })
 
             }
         })
@@ -48,7 +54,7 @@ app.get('/', function(req, res){
         if(index == 152)
             window.clearInterval(theLoop);
 
-    }, 1500);
+    //}, 1500);
 })
 
 app.listen('3000')

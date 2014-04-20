@@ -136,6 +136,25 @@ io.sockets.on('connection', function (socket){
         connection.query('INSERT INTO trainer (username, password, name) VALUES("' + username + '", "' + password + '", "' + name + '")');
 
     })
+
+    socket.on('getTrainerPokemon', function(trainerID){
+        var retPokeArray = new Array();
+        var getUrls = connection.query('SELECT imgUrl, pokemon.name, trainerPokemon.level, trainerPokemon.curHp, trainerPokemon.maxHp, trainerPokemon.attack, trainerPokemon.defense, trainerPokemon.special, trainerPokemon.speed FROM pokemon JOIN trainerPokemon WHERE pokemon.id = trainerPokemon.generalPokemon AND trainerPokemon.trainerID=' + trainerID);
+
+        getUrls.on('error', function(err){
+            console.log('error:', err);
+        });
+
+        getUrls.on('result', function(result){
+            retPokeArray.push([result.imgUrl, result.name, result.level, result.curHp, result.maxHp, result.attack, result.defense, result.special, result.speed]);
+            console.log(retPokeArray);
+        });
+
+        getUrls.on('end', function(result){
+            socket.emit('returnedPokemon', retPokeArray);
+            //callback();
+        });
+    })
 });
 
 function update(socket){

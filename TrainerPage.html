@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link href="./trainerStyle.css" type="text/css" rel="stylesheet">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">-->
+
+    <!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>-->
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var iosocket = io.connect('http://localhost:3000');
+
+        $(function(){
+            iosocket.emit('getTrainerPokemon', getCookie('trainerID'));
+        })
 
         function getTrainerId(){
             $('#trainerss').html(getCookie('trainerID'));
@@ -20,6 +26,25 @@
             var result = regexp.exec(document.cookie);
             return (result === null) ? null : result[1];
         }
+
+        iosocket.on('returnedPokemon', function (trainerPokemon){
+            $('#pokePictures').html('');
+            console.log(trainerPokemon);
+            var position = 0;
+            trainerPokemon.forEach(function (poke){
+                $('#pokePictures').append('<div class="col-md-2 col-mid-offset-' + position*2 + '">' +
+                                          '<img src="' + poke[0] + '" class="imgClass">' +
+                                          '<h3>' + poke[1] + '</h3>' +
+                                          '<h3>Level: ' + poke[2] + '</h3>' +
+                                          '<h4>Current HP: ' + poke[3] + '</h4>' +
+                                          '<h4>Max HP: ' + poke[4] + '</h4>' +
+                                          '<h4>Attack: ' + poke[5] + '</h4>' +
+                                          '<h4>Defense: ' + poke[6] + '</h4>' +
+                                          '<h4>Special: ' + poke[7] + '</h4>' +
+                                          '<h4>Speed: ' + poke[8] + '</h4></div>')
+                position++;
+            })
+        })
 
     </script>
 </head>
@@ -33,5 +58,7 @@
 </script>
 <div id="trainerss"></div>
 <button onclick="getTrainerId()">get t id</button>
+<h2>Your Pokemon</h2>
+<div id="pokePictures" class="row-fluid"></div>
 </body>
 </html>
