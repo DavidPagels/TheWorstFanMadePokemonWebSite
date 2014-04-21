@@ -36,7 +36,6 @@
 
         iosocket.on('updateDropDown', function(pokemon){
             availableTags = pokemon;
-            console.log(pokemon);
             $("#pokemonSelector").autocomplete({source: availableTags, messages: {
                 noResults: '',
                         results: function() {}
@@ -45,7 +44,6 @@
         });
 
         iosocket.on('setPokeData', function(name, imgUrl, dexDat, heightFt, heightIn, weight){
-            console.log(dexDat)
             if(dexDat != null){
 
                 $('#theContents').text(name);
@@ -56,7 +54,6 @@
                 $('#curWeight').html("Weight: " + weight + "lbs");
 
             } else {
-                console.log('in2')
                 $('.pokeDat').hide();
                 $('#curDescription').html('Please enter a pokemon to see its description.');
             }

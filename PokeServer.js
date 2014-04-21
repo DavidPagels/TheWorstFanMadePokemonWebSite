@@ -140,6 +140,7 @@ io.sockets.on('connection', function (socket){
     socket.on('getTrainerPokemon', function(trainerID){
         var retPokeArray = new Array();
         var getUrls = connection.query('SELECT imgUrl, pokemon.name, trainerPokemon.level, trainerPokemon.curHp, trainerPokemon.maxHp, trainerPokemon.attack, trainerPokemon.defense, trainerPokemon.special, trainerPokemon.speed FROM pokemon JOIN trainerPokemon WHERE pokemon.id = trainerPokemon.generalPokemon AND trainerPokemon.trainerID=' + trainerID);
+        getTrainerName(socket, trainerID);
 
         getUrls.on('error', function(err){
             console.log('error:', err);
@@ -155,7 +156,27 @@ io.sockets.on('connection', function (socket){
             //callback();
         });
     })
+    socket.on('heal', function(pokeID){
+        connection.query('UPDATE trainerPokemon SET curHp=maxHp WHERE thisPokemon=' + pokeID);
+    })
 });
+
+function getTrainerName(socket, trainerID){
+    var trainerName;
+    var trainerN = connection.query('SELECT name FROM trainer WHERE trainerID=' + trainerID)
+
+    trainerN.on('error', function(err){
+        console.log("error: " + err)
+    });
+
+    trainerN.on('result', function(result){
+        trainerName = result.name
+    });
+
+    trainerN.on('end', function(result){
+        socket.emit('setTitle', trainerName);
+    });
+}
 
 function update(socket){
    socket.emit('updateDropDown', PokeArray);

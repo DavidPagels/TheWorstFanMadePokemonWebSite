@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Worst Fan Made Pokemon Website</title>
+    <link rel="shortcut icon" href="http://i257.photobucket.com/albums/hh233/neji0313/BALLPO1.png">
     <link href="./trainerStyle.css" type="text/css" rel="stylesheet">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
@@ -14,12 +16,13 @@
         var iosocket = io.connect('http://localhost:3000');
 
         $(function(){
-            iosocket.emit('getTrainerPokemon', getCookie('trainerID'));
-        })
+            iosocket.emit('heal', 1);
 
-        function getTrainerId(){
-            $('#trainerss').html(getCookie('trainerID'));
-        }
+            if(getCookie('trainerID') == null)
+                window.location.href='/'
+            else
+                iosocket.emit('getTrainerPokemon', getCookie('trainerID'));
+        })
 
         function getCookie(name) {
             var regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
@@ -29,22 +32,30 @@
 
         iosocket.on('returnedPokemon', function (trainerPokemon){
             $('#pokePictures').html('');
-            console.log(trainerPokemon);
             var position = 0;
+            var divider = trainerPokemon.length;
             trainerPokemon.forEach(function (poke){
-                $('#pokePictures').append('<div class="col-md-2 col-mid-offset-' + position*2 + '">' +
-                                          '<img src="' + poke[0] + '" class="imgClass">' +
+                $('#pokePictures').append('<div class="col-md-' + (12/divider) + ' col-mid-offset-' + position * (12/divider) + '">' +
+                                          '<img src="' + poke[0] + '" class="imgClass" style="max-width:100%;max-height:100%;">' +
                                           '<h3>' + poke[1] + '</h3>' +
                                           '<h3>Level: ' + poke[2] + '</h3>' +
-                                          '<h4>Current HP: ' + poke[3] + '</h4>' +
-                                          '<h4>Max HP: ' + poke[4] + '</h4>' +
+                                          '<h4>HP: </h4><meter style="width:75%" value="' + poke[3] + '" min="0" max="' + poke[4] + '"></meter><h4>' + poke[3] + '/' + poke[4] + '</h4>' +
                                           '<h4>Attack: ' + poke[5] + '</h4>' +
                                           '<h4>Defense: ' + poke[6] + '</h4>' +
                                           '<h4>Special: ' + poke[7] + '</h4>' +
                                           '<h4>Speed: ' + poke[8] + '</h4></div>')
                 position++;
-            })
-        })
+            });
+        });
+
+        iosocket.on('setTitle', function(trainerName){
+            $(document).attr('title', 'Trainer ' + trainerName);
+            $('#trainerName').html(trainerName);
+            if(trainerName[trainerName.length - 1] == 's')
+                $('#trainerName').append("'");
+            else
+                $('#trainerName').append("'s");
+        });
 
     </script>
 </head>
@@ -57,8 +68,7 @@
     });
 </script>
 <div id="trainerss"></div>
-<button onclick="getTrainerId()">get t id</button>
-<h2>Your Pokemon</h2>
+<h2><div id="trainerName">Your</div> Pokemon</h2>
 <div id="pokePictures" class="row-fluid"></div>
 </body>
 </html>
