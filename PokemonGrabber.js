@@ -21,52 +21,46 @@ app.get('/', function(req, res){
     console.log('in scrape')
     var index = 0;
     //var theLoop = setInterval(function(){
-        var pokemon = PokeArray[index];
-        var url = 'http://bulbapedia.bulbagarden.net/wiki/List_of_moves';
 
+
+    var loop = setInterval(function(){
+        var pokemon = PokeArray[index];
+        var url = 'http://bulbapedia.bulbagarden.net/wiki/' + pokemon + '_(Pok%C3%A9mon)/Generation_I_learnset#By_leveling_up';
         request(url, function(error, response, html){
             if(!error){
                 var $ = cheerio.load(html);
-                var i = 1;
-                var loop = setInterval(function(){
-                    var stat = $('table.sortable').eq(1).children('tr').eq(i).children().eq(7).text()
-                    var pattern = /\s([^*\n%]+)%*[\n]*|[*]/;
-                    var other = stat.match(pattern)[1]
-                    console.log(other);
-                    if(other == '—' || other == undefined)
-                        connection.query('UPDATE moves SET accuracy=' + 1337 + ' WHERE id=' + i)
-                    else
-                        connection.query('UPDATE moves SET accuracy=' + other + ' WHERE id=' + i)
-                    i++;
-                    if(i==166)
-                        window.clearInterval(loop);
-                }, 125)
-//                    .each(function (){
-//                    var stat = $(this).eq(1).first().text();
-                    //connection.query('UPDATE pokemon SET expYield=' + stat + 'WHERE id=' + Math.ceil(index));
-//                console.log(stat);
-//                })
+                //var moveloop = setInterval(function (){
 
 
+                var rightthings = 0;
+                var stat = $('[style$="display:none"]').each(function ()
+                {
+                    if(rightthings % 3 == 0)
+//                    setTimeout(function(){
+                        console.log($(this).first().text())
+//                    }, 125)
+                    rightthings++;
 
-//                    var data = $(this);
-//                    data.children().children().eq(1).children().eq(1).children().each(function()
-//                    {
-//                        console.log($(this).text())
-//                        connection.query('INSERT INTO pokeTypes (pokeId, typeId) VALUES ((Select id from pokemon where name = "' + pokemon + '"), (select id from types where type = "' + $(this).text() + '"))');
-//                    });
-                   // var pattern = /(.*) lbs/;
-                    //catchRate = catchRate.text().match(pattern)
-                    //var feet = catchRate;
-                    //console.log(pokemon + " " + type);
-//                    connection.query('INSERT INTO pokeTypes (pokeId, typeId) VALUES ((Select id from pokemon where name = ' + name + '), (select id from types where type = ' + type + '))');
-               // })
 
+                })
+//                    var pattern = /\s([^*\n%]+)%*[\n]*|[*]/;
+//                    var other = stat.match(pattern)[1]
+                console.log(stat);
+//                    if(other == '—' || other == undefined)
+//                        connection.query('UPDATE moves SET accuracy=' + 1337 + ' WHERE id=' + i)
+//                    else
+//                        connection.query('UPDATE moves SET accuracy=' + other + ' WHERE id=' + i)
+//                    i++;
+//                    if(i==2)
+//                        clearInterval(loop);
+                // }, 125)
             }
         })
         index++;
-        if(index == 152)
-            window.clearInterval(theLoop);
+    }, 500)
+    index++;
+    if(index == 152)
+        window.clearInterval(theLoop);
 
     //}, 1500);
 })

@@ -32,6 +32,9 @@ function handleRequest(request, response){
         case '/TrainerPage':
             theUrl = 'TrainerPage.html'
             break;
+        case '/BattlePage':
+            theUrl = 'BattlePage.html'
+            break;
     }
     fs.readFile(theUrl, function(err, page) {
         response.writeHead(200, {'Content-Type': 'text/html'});

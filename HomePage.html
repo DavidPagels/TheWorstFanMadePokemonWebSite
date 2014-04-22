@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Log In</title>
+    <link rel="shortcut icon" href="http://i257.photobucket.com/albums/hh233/neji0313/BALLPO1.png">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -38,6 +40,7 @@
                 alert('Choose a different Username!')
             } else {
                 iosocket.emit('addUser', $('#username').val(), $('#password').val(), $('#trainerName').val())
+                getTrainer();
             }
         }
 

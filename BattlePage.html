@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Battle!</title>
+    <link rel="shortcut icon" href="http://i257.photobucket.com/albums/hh233/neji0313/BALLPO1.png">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <script>
+        var iosocket = io.connect('http://localhost:3000');
+
+        function startBattle(){
+
+        }
+
+    </script>
+</head>
+<body class="container">
+<div id="navAndHeader"></div>
+<script type="text/javascript">
+    $(function() {
+        $("#navAndHeader").load("/template"); // add "/"
+    });
+</script>
+    <button onClick="startBattle()">Wild</button>
+    <button>Trainer</button>
+
+</body>
+</html>
