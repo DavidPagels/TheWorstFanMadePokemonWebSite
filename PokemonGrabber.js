@@ -27,11 +27,25 @@ app.get('/', function(req, res){
         request(url, function(error, response, html){
             if(!error){
                 var $ = cheerio.load(html);
-                $('tr').each(function (){
-                    var stat = $(this).children('td').eq(0).text();
+                var i = 1;
+                var loop = setInterval(function(){
+                    var stat = $('table.sortable').eq(1).children('tr').eq(i).children().eq(7).text()
+                    var pattern = /\s([^*\n%]+)%*[\n]*|[*]/;
+                    var other = stat.match(pattern)[1]
+                    console.log(other);
+                    if(other == '—' || other == undefined)
+                        connection.query('UPDATE moves SET accuracy=' + 1337 + ' WHERE id=' + i)
+                    else
+                        connection.query('UPDATE moves SET accuracy=' + other + ' WHERE id=' + i)
+                    i++;
+                    if(i==166)
+                        window.clearInterval(loop);
+                }, 125)
+//                    .each(function (){
+//                    var stat = $(this).eq(1).first().text();
                     //connection.query('UPDATE pokemon SET expYield=' + stat + 'WHERE id=' + Math.ceil(index));
-                    console.log(stat);
-                })
+//                console.log(stat);
+//                })
 
 
 
