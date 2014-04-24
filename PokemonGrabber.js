@@ -22,7 +22,7 @@ app.get('/', function(req, res){
     var index = 0;
     //var theLoop = setInterval(function(){
 
-
+    var overallIndex = 1;
     var loop = setInterval(function(){
         var pokemon = PokeArray[index];
         var url = 'http://bulbapedia.bulbagarden.net/wiki/' + pokemon + '_(Pok%C3%A9mon)/Generation_I_learnset#By_leveling_up';
@@ -33,19 +33,33 @@ app.get('/', function(req, res){
 
 
                 var rightthings = 0;
-                var stat = $('[style$="display:none"]').each(function ()
+                //console.log($('[style$="display:none"]'))
+                var stat = $('[style$="border-collapse:collapse;"]').children().children('[style$="background:#FFFFFF; border:1px solid #D8D8D8;"]').each(function ()
                 {
-                    if(rightthings % 3 == 0)
-//                    setTimeout(function(){
-                        console.log($(this).first().text())
-//                    }, 125)
+                    if((rightthings + 4) % 5 == 0){
+                        var that = this
+                        //setTimeout(function(){
+                                var pattern = /\s(.*)/;
+                                var other = $(that).first().first().text().match(pattern)[1]
+                                if(other == 'PoisonPowder')
+                                    other = 'Poison Powder'
+                                if(other == 'SolarBeam')
+                                    other = 'Solar Beam'
+                                console.log(other)
+                                connection.query('UPDATE pokemonMoves SET moveID=(SELECT id FROM moves WHERE name="' + other + '") WHERE tempIndex=' + overallIndex);
+                                overallIndex++;
+
+
+                        //}, 125 * rightthings * (index + 1))
+                    }
+
                     rightthings++;
 
 
                 })
 //                    var pattern = /\s([^*\n%]+)%*[\n]*|[*]/;
 //                    var other = stat.match(pattern)[1]
-                console.log(stat);
+                //console.log(stat);
 //                    if(other == '—' || other == undefined)
 //                        connection.query('UPDATE moves SET accuracy=' + 1337 + ' WHERE id=' + i)
 //                    else
@@ -57,8 +71,7 @@ app.get('/', function(req, res){
             }
         })
         index++;
-    }, 500)
-    index++;
+    }, 1000)
     if(index == 152)
         window.clearInterval(theLoop);
 
