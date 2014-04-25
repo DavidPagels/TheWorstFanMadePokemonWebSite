@@ -39,7 +39,9 @@ function handleRequest(request, response){
             theUrl = 'SelectStarter.html'
             break;
     }
+    console.log(request.url)
     var cssFile = request.url.match(/\/(.*\.css)/);
+    var ttfFile = request.url.match(/\/(.*\.TTF)/)
     if(/\/(.*\.css)/.test(request.url)){
         console.log(cssFile)
         fs.readFile(cssFile[1], function(err, page) {
@@ -47,7 +49,16 @@ function handleRequest(request, response){
             response.write(page);
             response.end();
         });
-    }else{
+    }
+    else if(/\/(.*\.TTF)/.test(request.url)){
+        console.log(ttfFile)
+        fs.readFile(ttfFile[1], function(err, page) {
+            response.writeHead(200, {'Content-Type': 'application/octet-stream'});
+            response.write(page);
+            response.end();
+        });
+    }
+    else{
         fs.readFile(theUrl, function(err, page) {
             response.writeHead(200, {'Content-Type': 'text/html'});
             response.write(page);
@@ -188,7 +199,7 @@ io.sockets.on('connection', function (socket){
 
             gettingStarter.on('result', function(result){
                 console.log(result.speed);
-                retPokeArray = [pokeID, result.name, result.imgUrl, result.level, result.maxHp, result.attack, result.defense, result.special, result.speed];
+                retPokeArray = [getID, result.name, result.imgUrl, result.level, result.maxHp, result.attack, result.defense, result.special, result.speed];
             });
 
             gettingStarter.on('end', function(result){

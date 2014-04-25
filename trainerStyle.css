@@ -1,6 +1,14 @@
+@font-face {
+    font-family: 'Pokemon';
+    src: url('BACKTO1982.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
     background-image:url('http://samluo.weebly.com/uploads/4/4/0/7/4407542/1785255_orig.png');
     background-size: 100%;
+    font-family: 'Pokemon';
 }
 
 .imgClass {
@@ -12,6 +20,7 @@ body {
 }
 
 div.pokemen {
+    font-family: 'Pokemon';
     border:2px dashed;
     border-radius:15px;
     overflow:hidden;
@@ -31,4 +40,5 @@ div#positionStarters {
     bottom: 3%;
     right: 15%;
 }
+
 
