@@ -3,7 +3,7 @@
 <head>
     <title>Worst Fan Made Pokemon Website</title>
     <link rel="shortcut icon" href="http://i257.photobucket.com/albums/hh233/neji0313/BALLPO1.png">
-    <link href="./trainerStyle.css" type="text/css" rel="stylesheet">
+    <link href="trainerStyle.css" type="text/css" rel="stylesheet">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
@@ -35,7 +35,7 @@
             var position = 0;
             var divider = trainerPokemon.length;
             trainerPokemon.forEach(function (poke){
-                $('#pokePictures').append('<div class="col-md-' + (12/divider) + ' col-mid-offset-' + position * (12/divider) + '">' +
+                $('#pokePictures').append('<div id="pokemen" class="col-md-' + (12/divider) + ' col-mid-offset-' + position * (12/divider) + '">' +
                                           '<img src="' + poke[0] + '" class="imgClass" style="max-width:100%;max-height:100%;">' +
                                           '<h3>' + poke[1] + '</h3>' +
                                           '<h3>Level: ' + poke[2] + '</h3>' +

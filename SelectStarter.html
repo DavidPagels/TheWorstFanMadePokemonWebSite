@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Choose your first Pokemon!</title>
+    <link href="trainerStyle.css" type="text/css" rel="stylesheet">
+    <link rel="shortcut icon" href="http://i257.photobucket.com/albums/hh233/neji0313/BALLPO1.png">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        var iosocket = io.connect('http://localhost:3000');
+        $(function(){
+            iosocket.emit('getStarters', 1)
+            iosocket.emit('getStarters', 2)
+            iosocket.emit('getStarters', 3)
+        })
+
+        function choosePokemon(pokemon){
+            console.log('You chose pokemon ' + pokemon + '!');
+        }
+
+        iosocket.on('setStarters', function(theStarters){
+            console.log('in set')
+            $('#starter' + theStarters[0]).append(
+                    '<h2>' + theStarters[1] + '</h2>' +
+                    '<h3>Level: ' + theStarters[3] + '</h3>' +
+                    '<h3>HP: ' + theStarters[4] +'</h3>' +
+                    '<h3>Attack: ' + theStarters[5] + '</h3>' +
+                    '<h3>Defense: ' + theStarters[6] + '</h3>' +
+                    '<h3>Special: ' + theStarters[7] + '</h3>' +
+                    '<h3>Speed: ' + theStarters[8] + '</h3>' +
+                    '<img src="'+ theStarters[2] + '" style="max-width:60%; max-height:60%;">'
+
+
+            )
+        })
+    </script>
+
+</head>
+
+<body class="container">
+<h1 class="page-header">Welcome to the Worst Fan Made Pokemon Website!</h1>
+<h2>Please select your pokemon:</h2>
+<div id="positionStarters">
+<div id="starter1" onclick='choosePokemon(1)' class="col-md-4 pokemen">
+<img id='starter1img' src="">
+</div>
+<div id="starter2" onclick='choosePokemon(2)' class="col-md-4 pokemen">
+<img id='starter2img' src="">
+</div>
+<div id="starter3" onclick='choosePokemon(3)' class="col-md-4 pokemen">
+<img id='starter3img' src="">
+</div>
+</div>
+
+</body>
+</html>

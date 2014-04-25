@@ -35,12 +35,25 @@ function handleRequest(request, response){
         case '/BattlePage':
             theUrl = 'BattlePage.html'
             break;
+        case '/SelectStarter':
+            theUrl = 'SelectStarter.html'
+            break;
     }
-    fs.readFile(theUrl, function(err, page) {
-        response.writeHead(200, {'Content-Type': 'text/html'});
-        response.write(page);
-        response.end();
-    });
+    var cssFile = request.url.match(/\/(.*\.css)/);
+    if(/\/(.*\.css)/.test(request.url)){
+        console.log(cssFile)
+        fs.readFile(cssFile[1], function(err, page) {
+            response.writeHead(200, {'Content-Type': 'text/css'});
+            response.write(page);
+            response.end();
+        });
+    }else{
+        fs.readFile(theUrl, function(err, page) {
+            response.writeHead(200, {'Content-Type': 'text/html'});
+            response.write(page);
+            response.end();
+        });
+    }
 }
 
 
@@ -162,6 +175,28 @@ io.sockets.on('connection', function (socket){
     socket.on('heal', function(pokeID){
         connection.query('UPDATE trainerPokemon SET curHp=maxHp WHERE thisPokemon=' + pokeID);
     })
+    socket.on('getStarters', function(pokeID){
+        retPokeArray = [];
+        connection.query('CALL createWildPokemon(' + ((pokeID - 1) * 3 + 1 ) + ', 5)');
+        getUniqueID(function(getID){
+            console.log(getID);
+            var gettingStarter = connection.query('Select wildPokemon.level, wildPokemon.maxHp, wildPokemon.attack, wildPokemon.defense, wildPokemon.special, wildPokemon.speed, pokemon.imgUrl, pokemon.name FROM wildPokemon JOIN pokemon WHERE thisPokemon=' + getID + ' AND pokemon.id=wildPokemon.generalPokemon');
+
+            gettingStarter.on('error', function(err){
+                console.log('error:', err);
+            });
+
+            gettingStarter.on('result', function(result){
+                console.log(result.speed);
+                retPokeArray = [pokeID, result.name, result.imgUrl, result.level, result.maxHp, result.attack, result.defense, result.special, result.speed];
+            });
+
+            gettingStarter.on('end', function(result){
+                socket.emit('setStarters', retPokeArray);
+                //callback();
+            });
+        })
+    })
 });
 
 function getTrainerName(socket, trainerID){
@@ -183,4 +218,21 @@ function getTrainerName(socket, trainerID){
 
 function update(socket){
    socket.emit('updateDropDown', PokeArray);
+}
+
+function getUniqueID(callback){
+    var gettingID = connection.query('SELECT LAST_INSERT_ID() AS id');
+    var theID
+    gettingID.on('error', function(err){
+        console.log('error:', err);
+    });
+
+    gettingID.on('result', function(result){
+        theID = result.id
+    });
+
+    gettingID.on('end', function(result){
+        console.log(theID)
+        callback(theID);
+    });
 }
