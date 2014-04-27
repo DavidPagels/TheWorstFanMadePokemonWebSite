@@ -38,6 +38,12 @@ function handleRequest(request, response){
         case '/SelectStarter':
             theUrl = 'SelectStarter.html'
             break;
+        case '/ContentOrigin':
+            theUrl = 'ContentOrigin.html'
+            break;
+        case '/footer':
+            theUrl = 'Footer.html'
+            break;
     }
     console.log(request.url)
     var cssFile = request.url.match(/\/(.*\.css)/);

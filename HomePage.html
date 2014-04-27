@@ -89,5 +89,11 @@
     <button class="secondaryTags" style='display: none;' onClick="cancelCreate()">Cancel</button>
 
     <p>Or try the <a href="/Pokedex">Pokedex</a>!</p>
+    <div id="footer"></div>
+    <script type="text/javascript">
+        $(function() {
+            $("#footer").load("/footer"); // add "/"
+        });
+    </script>
 </body>
 </html>

@@ -59,7 +59,7 @@
 
     </script>
 </head>
-<body class="container">
+<body class="container trainer">
 <div id="navAndHeader"></div>
 <script type="text/javascript">
     $(function() {
@@ -70,5 +70,11 @@
 <div id="trainerss"></div>
 <h2><div id="trainerName">Your</div> Pokemon</h2>
 <div id="pokePictures" class="row-fluid"></div>
+<div id="footer"></div>
+<script type="text/javascript">
+    $(function() {
+        $("#footer").load("/footer"); // add "/"
+    });
+</script>
 </body>
 </html>

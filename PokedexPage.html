@@ -63,7 +63,7 @@
 
     </script>
 </head>
-<body class="container">
+<body class="container trainer">
 
 <div class="row-fluid">
     <div id="navAndHeader"></div>
@@ -72,17 +72,25 @@
             $("#navAndHeader").load("/template"); // add "/"
         });
     </script>
-    <!--<input type="button" class='btn btn-default btn-success' onclick="dispPoke()" value="do stuff">-->
     <div class="row-fluid">
         <input type='text' id='pokemonSelector'/>
-        <button onClick="getPokeInfo()">Enter</button>
+        <button class='pokeButton' onClick="getPokeInfo()">Enter</button>
     </div>
-    <div class="col-md-4 col-mid-offset-4"></div>
-    <h2 id="theContents" class="pokeDat"></h2>
-    <div id="curPokemon" class="pokeDat col-md-6 col-md-offset-3"></div><br>
-    <div id="curDescription" class="col-md-12"></div>
+    <div class="blockFont">
+    <h2 id="theContents" align='center' class="pokeDat"></h2>
+    <div id="curPokemon" align="center" class="pokeDat"></div><br>
+    <div id="curDescription" align="center"></div>
+    <div class="pokedex">
     <div id="curHeight" class="pokeDat"></div>
     <div id="curWeight" class="pokeDat"></div>
+        </div>
+        </div>
 </div>
+<div id="footer"></div>
+<script type="text/javascript">
+    $(function() {
+        $("#footer").load("/footer"); // add "/"
+    });
+</script>
 </body>
 </html>

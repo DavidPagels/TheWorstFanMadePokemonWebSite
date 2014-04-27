@@ -65,11 +65,17 @@
 
 </head>
 
-<body class="container">
+<body class="container trainer">
 <h1 class="page-header">Welcome to the Worst Fan Made Pokemon Website!</h1>
 <h2>Please select your pokemon:</h2>
 <div id="positionStarters">
 </div>
+<div id="footer"></div>
+<script type="text/javascript">
+    $(function() {
+        $("#footer").load("/footer"); // add "/"
+    });
+</script>
 
 </body>
 </html>
