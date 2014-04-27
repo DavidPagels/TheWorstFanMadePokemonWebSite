@@ -17,28 +17,16 @@
             iosocket.emit('getStarters', 3)
         })
 
-//        window.confirm = function(obj){
-//            $('#dialog').html('\
-//        <div>\
-//            <h2>Confirm</h2>\
-//            <p>Are you sure?</p>\
-//            <p>\
-//                <button name="confirm" value="yes" class="facebox-btn close">Yes</button>\
-//                <button name="confirm" value="no" class="facebox-btn close">No</button>\
-//            </p>\
-//        </div>').overlay().load();
-//            $('button[name=confirm]').click(function(){
-//                if ($(this).val() == 'yes') {
-//                    $('#dialog').overlay().close();
-//                    obj.data('confirmed', true).click().removeData('confirmed');
-//                } else {
-//                    $('#dialog').overlay().close();
-//                }
-//            });
-//        }
+        function getCookie(name) {
+            var regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
+            var result = regexp.exec(document.cookie);
+            return (result === null) ? null : result[1];
+        }
 
         function choosePokemon(pokemonID, pokeName){
             if(confirm('You chose ' + pokeName + '!\n Are you sure?')){
+                iosocket.emit('transferPokemon', getCookie('trainerID'), pokemonID)
+                window.location.href='/TrainerPage'
 
             }
         }

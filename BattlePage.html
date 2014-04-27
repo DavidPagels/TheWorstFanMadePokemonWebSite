@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Battle!</title>
+    <link href="battleStyle.css" type="text/css" rel="stylesheet">
     <link rel="shortcut icon" href="http://i257.photobucket.com/albums/hh233/neji0313/BALLPO1.png">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -11,20 +12,50 @@
         var iosocket = io.connect('http://localhost:3000');
 
         function startBattle(){
-
+            $('.nonBattle').fadeOut(function (){ $('.battle').fadeIn()});
+            iosocket.emit('getChallenger', 1);
+            iosocket.emit('getYourPokemon', getCookie('trainerID'));
         }
+
+        function getCookie(name) {
+            var regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
+            var result = regexp.exec(document.cookie);
+            return (result === null) ? null : result[1];
+        }
+
+        iosocket.on('returnedWild', function (wildPokemon){
+            $('#cPokemonName').text(wildPokemon[1]);
+            $('#cImage').attr('src', wildPokemon[2]);
+            $('#currentText').text('A wild ' + wildPokemon[1] + ' has appeared!');
+        })
+
+        iosocket.on('returnedYours', function(yourPokemon){
+            $('#yPokemonName').text(yourPokemon[0]);
+            $('#yImage').attr('src', yourPokemon[1]);
+        })
 
     </script>
 </head>
 <body class="container">
-<div id="navAndHeader"></div>
+<div id="navAndHeader" class="nonBattle"></div>
 <script type="text/javascript">
     $(function() {
         $("#navAndHeader").load("/template"); // add "/"
     });
 </script>
-    <button onClick="startBattle()">Wild</button>
-    <button>Trainer</button>
+    <button class='nonBattle' onClick="startBattle()">Wild</button>
+    <button class="nonBattle">Trainer</button>
+<div id="challengingPokemon" class="battle" style="display:none;">
+    <h2 id="cPokemonName"></h2>
+    <img id="cImage" style="filter:FlipH">
+</div>
+<div id="yourPokemon" class="battle" style="display:none;">
+    <h2 id="yPokemonName"></h2>
+    <img id="yImage">
+</div>
+<div id="textBox" align='center' class="battle" style="display:none;">
+    <h1 id="currentText"></h1>
+</div>
 <div id="footer"></div>
 <script type="text/javascript">
     $(function() {

@@ -44,6 +44,9 @@ function handleRequest(request, response){
         case '/footer':
             theUrl = 'Footer.html'
             break;
+        case '/Battle':
+            theUrl = 'Battle.html'
+            break
     }
     console.log(request.url)
     var cssFile = request.url.match(/\/(.*\.css)/);
@@ -213,6 +216,44 @@ io.sockets.on('connection', function (socket){
                 //callback();
             });
         })
+    })
+
+    socket.on('transferPokemon', function(tID, wID){
+        connection.query('CALL transferPokemon(' + tID + ', ' + wID + ')');
+    })
+
+    socket.on('getChallenger', function(wID){
+        var wildArr = [];
+        var wildPokemon = connection.query('SELECT pokemon.name, pokemon.imgUrl, wildPokemon.level, wildPokemon.maxHp, wildPokemon.curHp FROM wildPokemon JOIN pokemon WHERE wildPokemon.thisPokemon=' + wID + ' AND pokemon.id=(SELECT generalPokemon from wildPokemon WHERE thisPokemon=' + wID + ')')
+        wildPokemon.on('error', function(err){
+            console.log('error:', err);
+        });
+
+        wildPokemon.on('result', function(result){
+            wildArr = [wID, result.name, result.imgUrl, result.level, result.maxHp, result.curHp];
+        });
+
+        wildPokemon.on('end', function(result){
+            socket.emit('returnedWild', wildArr);
+            //callback();
+        });
+    })
+    socket.on('getYourPokemon', function(tID){
+        var yourArr = []
+        var yourPokemon = connection.query('SELECT pokemon.name, pokemon.imgUrl, trainerPokemon.level, trainerPokemon.maxHp, trainerPokemon.curHp FROM trainerPokemon JOIN pokemon WHERE trainerPokemon.thisPokemon=(SELECT thisPokemon FROM trainerPokemon WHERE trainerID=' + tID + ' LIMIT 1) AND pokemon.id=trainerPokemon.generalPokemon')
+        yourPokemon.on('error', function(err){
+            console.log('error:', err);
+        });
+
+        yourPokemon.on('result', function(result){
+            console.log(result.imgUrl)
+            yourArr = [result.name, result.imgUrl, result.level, result.maxHp, result.curHp];
+        });
+
+        yourPokemon.on('end', function(result){
+            socket.emit('returnedYours', yourArr);
+            //callback();
+        });
     })
 });
 
