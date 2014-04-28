@@ -269,8 +269,21 @@ io.sockets.on('connection', function (socket){
     })
     socket.on('doDmgToWild', function(trainerPokemon, wildPokemon, moveID){
         var damage;
+        var hps = [];
         connection.query('CALL getDmgToWild(' + trainerPokemon + ', ' + wildPokemon + ', ' + moveID + ')');
-        socket.emit('updateHp');
+        var newHps = connection.query('SELECT trainerPokemon.curHp, wildPokemon.curHp AS curHp2 FROM trainerPokemon JOIN wildPokemon WHERE trainerPokemon.thisPokemon=' + trainerPokemon + ' AND wildPokemon.thisPokemon=' + wildPokemon);
+        newHps.on('error', function(err){
+            console.log("error: " + err)
+        });
+
+        newHps.on('result', function(result){
+            hps[0] = result.curHp;
+            hps[1] = result.curHp2;
+        });
+
+        newHps.on('end', function(result){
+            socket.emit('updateHp', hps);
+        });
 
     })
 });

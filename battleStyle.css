@@ -1,24 +1,41 @@
+.wildTrainer {
+    position: absolute;
+    height: 100%;
+    width:100%;
+}
 .wild{
     position: absolute;
     height: 50%;
-    width: 30%;
+    width: 15%;
     border: 2px solid;
-    left: 20%;
-    top: 20%;
+    border-radius: 5px;
+    top: 5%;
+    left: 10%;
+    z-index: 10;
 }
 
 .trainer {
     position: absolute;
     height: 50%;
-    width: 30%;
+    width: 15%;
     border: 2px solid;
-    right: 20%;
-    top: 20%;
+    border-radius: 5px;
+    top: 5%;
+    left: 30%;
+    z-index: 10;
 }
 
-/*.nonBattle:hover {*/
-    /*background-color: lightgrey;*/
-/*}*/
+.wtContent {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+
+}
+
+
+.divChoice:hover {
+    background-color: lightgrey;
+}
 
 #challengingPokemon {
     position:absolute;

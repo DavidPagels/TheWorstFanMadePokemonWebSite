@@ -47,9 +47,11 @@
         }
 
         function useMove(movePlacement){
-            $('#fightResult').html( yPokemonN[0] + ' used ' + yMove[movePlacement - 1][1] )
+
+            $('#currentText').html( yPokemonN[0] + ' used ' + yMove[movePlacement - 1][1] )
             $('#yImage').animate({right: "+=10%"}, "fast", function (){ $('#yImage').animate({right: "-=10%"}, "fast",
                     function (){ $('#yImage').animate({right: "+=10%"}, "fast", function (){ $('#yImage').animate({right: "-=10%"}, "fast")})})})
+            $('.battleOptions').hide();
             $('#option1').html('<h2>FIGHT</h2>');
             $('#option2').html('<h2>PKMN</h2>');
             $('#option3').html('<h2>ITEM</h2>');
@@ -60,17 +62,30 @@
             $('#option4').attr('onclick', 'runAway()');
             console.log(yPokemonN[1] + ', ' +  1 + ', ' + yMove[movePlacement - 1][0]);
 
-            iosocket.emit('doDmgToWild', yPokemonN[1], 1, yMove[movePlacement - 1][0]);
+            setTimeout (function () {
+                iosocket.emit('doDmgToWild', yPokemonN[1], 1, yMove[movePlacement - 1][0]);
+            }, 1000);
+            setTimeout(function() {
+            $('.battleOptions').show();
+
+
+            }, 3000)
         }
 
         iosocket.on('returnedWild', function (wildPokemon){
             wPokemonN[0] = wildPokemon[1];
             $('#cPokemonName').text(wildPokemon[1]);
             $('#cLevel').text('Lv. ' + wildPokemon[3])
-            $('#cHp').html('<meter style="width:75%" value="' + wildPokemon[5] + '" min="0" max="' + wildPokemon[4] +
+            $('#cHp').html('<meter id="wildHp" style="width:75%" value="' + wildPokemon[5] + '" min="0" max="' + wildPokemon[4] +
                     '" low="' + wildPokemon[4] * .2 + '" high="' + wildPokemon[4] * .5 + '" optimum="' + wildPokemon[4] + '"></meter>');
             $('#cImage').attr('src', wildPokemon[2]);
             $('#currentText').text('A wild ' + wildPokemon[1] + ' has appeared!');
+
+            setTimeout(function (){ $('.battleOptions').show(); console.log("in it");}, 3000)
+        })
+
+        iosocket.on('updatedHps', function(theHps){
+
         })
 
         iosocket.on('returnedYours', function(yourPokemon){
@@ -78,7 +93,7 @@
             yPokemonN[1] = yourPokemon[17];
             $('#yPokemonName').text(yourPokemon[0]);
             $('#yLevel').text('Lv. ' + yourPokemon[2])
-            $('#yHp').html('<h3>' + yourPokemon[4] + '/' + yourPokemon[3] + '</h3><meter style="width:75%" value="' +
+            $('#yHp').html('<h3>' + yourPokemon[4] + '/' + yourPokemon[3] + '</h3><meter id="yourHp"" style="width:75%" value="' +
                     yourPokemon[4] + '" min="0" max="' + yourPokemon[3] + '" low="' + yourPokemon[3] * .2 + '" high="' +
                     yourPokemon[3] * .5 + '" optimum="' + yourPokemon[3] + '"></meter>');
             $('#yImage').attr('src', yourPokemon[1]);
@@ -88,8 +103,9 @@
             yMove[3] = [ yourPokemon[8], yourPokemon[12], yourPokemon[16]];
         })
 
-        iosocket.on('updateHp', function (){
-            startBattle();
+        iosocket.on('updateHp', function (theHps){
+            $('#yourHp').attr("value", theHps[0]);
+            $('#wildHp').attr("value", theHps[1]);
         })
 
     </script>
@@ -101,9 +117,10 @@
         $("#navAndHeader").load("/template"); // add "/"
     });
 </script>
-<div id="fightResult" class="battle"></div>
-<div class='nonBattle wild' onClick="startBattle()">Wild</div>
-<div class="nonBattle trainer">Trainer</div>
+<div class="nonBattle wildTrainer">
+<div class='nonBattle wtContent divChoice wild' onClick="startBattle()">Wild</div>
+<div class="nonBattle wtContent divChoice trainer">Trainer</div>
+    </div>
 <div class="thePokemon">
     <div id="challengingPokemon" class="battle" style="display:none;">
         <div id="challengePokeInfo">
@@ -124,7 +141,7 @@
 </div>
 <div id="textBox" align='center' class="battle battleBox battleText" style="display:none;">
     <h1 id="currentText"></h1>
-    <div class="battleBox battleOptions">
+    <div class="battleBox battleOptions" style="display:none;">
         <div id="option1" onclick="fight()" class="options battleBox">
             <h2>FIGHT</h2>
         </div>
