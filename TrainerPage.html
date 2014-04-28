@@ -16,9 +16,6 @@
         var iosocket = io.connect('http://localhost:3000');
 
         $(function(){
-            $('#battlebtn').click( function (){
-                $('img').animate({right: '50px'}, 1000)/*.animate({right: '50px'}, 1000);*/
-            })
             iosocket.emit('heal', 1);
 
             if(getCookie('trainerID') == null)
@@ -39,7 +36,7 @@
             var divider = trainerPokemon.length;
             trainerPokemon.forEach(function (poke){
                 $('#pokePictures').append('<div id="pokemen" class="col-md-' + (12/divider) + ' col-mid-offset-' + position * (12/divider) + '">' +
-                                          '<img src="' + poke[0] + '" class="imgClass" style="position:absolute;max-width:100%;max-height:100%;">' +
+                                          '<img src="' + poke[0] + '" class="imgClass" style="max-width:100%;max-height:100%;">' +
                                           '<h3>' + poke[1] + '</h3>' +
                                           '<h3>Level: ' + poke[2] + '</h3>' +
                                           '<h4>HP: </h4><meter style="width:75%" value="' + poke[3] + '" min="0" max="' + poke[4] + '"></meter><h4>' + poke[3] + '/' + poke[4] + '</h4>' +
@@ -73,9 +70,8 @@
     });
 </script>
 <div id="trainerss"></div>
-<h2><div id="trainerName">Your</div> Pokemon</h2>
-<div id="pokePictures" class="row-fluid"></div>
-<button id='battlebtn'>BATTLE</button>
+<h2 class="blockFont"><div id="trainerName">Your</div> Pokemon</h2>
+<div id="pokePictures" class="row-fluid blockFont"></div>
 <div id="footer"></div>
 <script type="text/javascript">
     $(function() {

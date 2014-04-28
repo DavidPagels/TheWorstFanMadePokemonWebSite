@@ -240,14 +240,25 @@ io.sockets.on('connection', function (socket){
     })
     socket.on('getYourPokemon', function(tID){
         var yourArr = []
-        var yourPokemon = connection.query('SELECT pokemon.name, pokemon.imgUrl, trainerPokemon.level, trainerPokemon.maxHp, trainerPokemon.curHp FROM trainerPokemon JOIN pokemon WHERE trainerPokemon.thisPokemon=(SELECT thisPokemon FROM trainerPokemon WHERE trainerID=' + tID + ' LIMIT 1) AND pokemon.id=trainerPokemon.generalPokemon')
+        var yourPokemon = connection.query('SELECT pokemon.name, pokemon.imgUrl, trainerPokemon.level, trainerPokemon.maxHp,' +
+            ' trainerPokemon.curHp, move1, move2, move3, move4, (SELECT name from moves JOIN trainerPokemon where trainerPokemon.move1=moves.id AND' +
+            ' trainerPokemon.trainerID=' + tID + ') AS move1N, (SELECT name from moves JOIN trainerPokemon where ' +
+            'trainerPokemon.move2=moves.id AND trainerPokemon.trainerID=' + tID + ') AS move2N, (SELECT name from moves' +
+            ' JOIN trainerPokemon where trainerPokemon.move3=moves.id AND trainerPokemon.trainerID=' + tID + ') AS move3N, ' +
+            '(SELECT name from moves JOIN trainerPokemon where trainerPokemon.move4=moves.id AND trainerPokemon.trainerID=' +
+            tID + ') AS move4N, trainerPokemon.move1PP, trainerPokemon.move2PP, trainerPokemon.move3PP, trainerPokemon.move4PP ' +
+            'FROM trainerPokemon JOIN pokemon WHERE trainerPokemon.thisPokemon=(SELECT thisPokemon FROM trainerPokemon WHERE ' +
+            'trainerID=' + tID + ' LIMIT 1) AND pokemon.id=trainerPokemon.generalPokemon')
         yourPokemon.on('error', function(err){
             console.log('error:', err);
         });
 
         yourPokemon.on('result', function(result){
             console.log(result.imgUrl)
-            yourArr = [result.name, result.imgUrl, result.level, result.maxHp, result.curHp];
+            yourArr = [result.name, result.imgUrl, result.level, result.maxHp, result.curHp,
+                result.move1, result.move2, result.move3, result.move4,
+                result.move1N, result.move2N, result.move3N, result.move4N,
+                result.move1PP, result.move2PP, result.move3PP, result.move4PP];
         });
 
         yourPokemon.on('end', function(result){

@@ -32,6 +32,7 @@
         iosocket.on('returnedYours', function(yourPokemon){
             $('#yPokemonName').text(yourPokemon[0]);
             $('#yImage').attr('src', yourPokemon[1]);
+//            alert(yourPokemon[5]);
         })
 
     </script>
@@ -53,8 +54,25 @@
     <h2 id="yPokemonName"></h2>
     <img id="yImage">
 </div>
-<div id="textBox" align='center' class="battle" style="display:none;">
+<div id="textBox" align='center' class="battle battleBox battleText" style="display:none;">
     <h1 id="currentText"></h1>
+    <div class="battleBox battleOptions">
+        <div id="leftcolumn">
+        <div id="option1" class="battleBox">
+            <h2>FIGHT</h2>
+        </div>
+        <div id="option2" class="battleBox">
+            <h2>PKMN</h2>
+        </div>
+            </div><div id="rightcolumn">
+        <div id="option3" class="battleBox">
+            <h2>ITEM</h2>
+        </div>
+        <div id="option4" class="battleBox">
+            <h2>RUN</h2>
+        </div>
+        </div>
+    </div>
 </div>
 <div id="footer"></div>
 <script type="text/javascript">
