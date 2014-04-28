@@ -222,21 +222,33 @@ io.sockets.on('connection', function (socket){
         connection.query('CALL transferPokemon(' + tID + ', ' + wID + ')');
     })
 
-    socket.on('getChallenger', function(wID){
+    socket.on('getChallenger', function(){
         var wildArr = [];
-        var wildPokemon = connection.query('SELECT pokemon.name, pokemon.imgUrl, wildPokemon.level, wildPokemon.maxHp, ' +
-            'wildPokemon.curHp FROM wildPokemon JOIN pokemon WHERE wildPokemon.thisPokemon=' + wID + ' AND pokemon.id=(SELECT generalPokemon from wildPokemon WHERE thisPokemon=' + wID + ')')
-        wildPokemon.on('error', function(err){
-            console.log('error:', err);
-        });
+        var pokemon = Math.random() * 151
+        connection.query('CALL createWildPokemon(' + pokemon + ', 5)')
+        getUniqueID(function(wID){
+            var wildPokemon = connection.query('SELECT pokemon.name, pokemon.imgUrl, wildPokemon.level, wildPokemon.maxHp, ' +
+                'wildPokemon.curHp, move1, move2, move3, move4, move1PP, move2PP, move3PP, move4PP, ' +
+                '(SELECT name FROM moves JOIN wildPokemon WHERE wildPokemon.move1=moves.id AND wildPokemon.thisPokemon='+ wID + ') AS move1N, ' +
+                '(SELECT name FROM moves JOIN wildPokemon WHERE wildPokemon.move2=moves.id AND wildPokemon.thisPokemon='+ wID + ') AS move2N, ' +
+                '(SELECT name FROM moves JOIN wildPokemon WHERE wildPokemon.move3=moves.id AND wildPokemon.thisPokemon='+ wID + ') AS move3N, ' +
+                '(SELECT name FROM moves JOIN wildPokemon WHERE wildPokemon.move4=moves.id AND wildPokemon.thisPokemon='+ wID + ') AS move4N ' +
+                'FROM wildPokemon JOIN pokemon WHERE wildPokemon.thisPokemon=' + wID + ' AND pokemon.id=(SELECT generalPokemon from wildPokemon WHERE thisPokemon=' + wID + ')')
+            wildPokemon.on('error', function(err){
+                console.log('error:', err);
+            });
 
-        wildPokemon.on('result', function(result){
-            wildArr = [wID, result.name, result.imgUrl, result.level, result.maxHp, result.curHp];
-        });
+            wildPokemon.on('result', function(result){
+                wildArr = [wID, result.name, result.imgUrl, result.level, result.maxHp, result.curHp,
+                    result.move1, result.move2, result.move3, result.move4,
+                    result.move1N, result.move2N, result.move3N, result.move4N,
+                    result.move1PP, result.move2PP, result.move3PP, result.move4PP];
+            });
 
-        wildPokemon.on('end', function(result){
-            socket.emit('returnedWild', wildArr);
-            //callback();
+            wildPokemon.on('end', function(result){
+                socket.emit('returnedWild', wildArr);
+                //callback();
+            });
         });
     })
     socket.on('getYourPokemon', function(tID){
@@ -267,11 +279,13 @@ io.sockets.on('connection', function (socket){
             //callback();
         });
     })
-    socket.on('doDmgToWild', function(trainerPokemon, wildPokemon, moveID){
-        var damage;
+    socket.on('doDmg', function(AttackingPokemon, ReceivingPokemon, moveID, wOrT){
         var hps = [];
-        connection.query('CALL getDmgToWild(' + trainerPokemon + ', ' + wildPokemon + ', ' + moveID + ')');
-        var newHps = connection.query('SELECT trainerPokemon.curHp, wildPokemon.curHp AS curHp2 FROM trainerPokemon JOIN wildPokemon WHERE trainerPokemon.thisPokemon=' + trainerPokemon + ' AND wildPokemon.thisPokemon=' + wildPokemon);
+        connection.query('CALL getDmgW(' + AttackingPokemon + ', ' + ReceivingPokemon + ', ' + moveID + ', ' + wOrT + ')');
+        if(wOrT == 0)
+            var newHps = connection.query('SELECT trainerPokemon.curHp, wildPokemon.curHp AS curHp2 FROM trainerPokemon JOIN wildPokemon WHERE trainerPokemon.thisPokemon=' + AttackingPokemon + ' AND wildPokemon.thisPokemon=' + ReceivingPokemon);
+        else
+            var newHps = connection.query('SELECT trainerPokemon.curHp, wildPokemon.curHp AS curHp2 FROM trainerPokemon JOIN wildPokemon WHERE trainerPokemon.thisPokemon=' + ReceivingPokemon + ' AND wildPokemon.thisPokemon=' + AttackingPokemon);
         newHps.on('error', function(err){
             console.log("error: " + err)
         });
@@ -285,6 +299,10 @@ io.sockets.on('connection', function (socket){
             socket.emit('updateHp', hps);
         });
 
+    })
+
+    socket.on('deletePokemon', function(wPokeID){
+        connection.query('DELETE FROM wildPokemon WHERE thisPokemon=' + wPokeID);
     })
 });
 
@@ -306,7 +324,7 @@ function getTrainerName(socket, trainerID){
 }
 
 function update(socket){
-   socket.emit('updateDropDown', PokeArray);
+    socket.emit('updateDropDown', PokeArray);
 }
 
 function getUniqueID(callback){
