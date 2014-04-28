@@ -14,6 +14,7 @@
         var yPokemonN = [];
         var wPokemonN = [];
         var numCMoves = 0;
+        var inProgress = false;
 
         var iosocket = io.connect('http://localhost:3000');
 
@@ -37,6 +38,7 @@
             $('.nonBattle').fadeOut(function (){ $('.battle').fadeIn()});
             iosocket.emit('getChallenger');
             iosocket.emit('getYourPokemon', getCookie('trainerID'));
+            inProgress = true;
         }
 
         function getCookie(name) {
@@ -89,17 +91,19 @@
                 console.log(numCMoves)
                 move = Math.floor(Math.random()*numCMoves)
                 console.log(move)
-                $('#cImage').animate({right: "-=10%"}, "fast", function (){ $('#cImage').animate({right: "+=10%"}, "fast",
-                        function (){ $('#cImage').animate({right: "-=10%"}, "fast", function (){ $('#cImage').animate({right: "+=10%"}, "fast")})})})
+                $('#cImage').animate({left: "-=10%"}, "fast", function (){ $('#cImage').animate({left: "+=10%"}, "fast",
+                        function (){ $('#cImage').animate({left: "-=10%"}, "fast", function (){ $('#cImage').animate({left: "+=10%"}, "fast")})})})
                 $('#currentText').html(wPokemonN[0] + ' used ' + cMove[move][1])
             }, 3000)
 
             setTimeout(function(){
-                iosocket.emit('doDmg', wPokemonN[1], yPokemonN[1], cMove[move][0], 1);
+                if(inProgress)
+                    iosocket.emit('doDmg', wPokemonN[1], yPokemonN[1], cMove[move][0], 1);
             }, 4000)
 
             setTimeout(function() {
-                $('.battleOptions').show();
+                if(inProgress)
+                    $('.battleOptions').show();
             }, 6000)
         }
 
@@ -123,7 +127,7 @@
                     numCMoves++;
             console.log(numCMoves)
 
-            setTimeout(function (){ $('.battleOptions').show(); console.log("in it");}, 3000)
+            setTimeout(function (){ $('.battleOptions').show(); }, 3000)
         })
 
         iosocket.on('returnedYours', function(yourPokemon){
@@ -145,10 +149,14 @@
             $('#yourHp').attr("value", theHps[0]);
             $('#wildHp').attr("value", theHps[1]);
             $('#showHp').text(theHps[0])
-            if(theHps[0] <= 0)
+            if(theHps[0] <= 0){
+                inProgress = false;
                 lose();
-            if(theHps[1] <= 0)
+            }
+            if(theHps[1] <= 0){
+                inProgress = false;
                 win();
+            }
         })
 
     </script>
