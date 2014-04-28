@@ -224,7 +224,8 @@ io.sockets.on('connection', function (socket){
 
     socket.on('getChallenger', function(wID){
         var wildArr = [];
-        var wildPokemon = connection.query('SELECT pokemon.name, pokemon.imgUrl, wildPokemon.level, wildPokemon.maxHp, wildPokemon.curHp FROM wildPokemon JOIN pokemon WHERE wildPokemon.thisPokemon=' + wID + ' AND pokemon.id=(SELECT generalPokemon from wildPokemon WHERE thisPokemon=' + wID + ')')
+        var wildPokemon = connection.query('SELECT pokemon.name, pokemon.imgUrl, wildPokemon.level, wildPokemon.maxHp, ' +
+            'wildPokemon.curHp FROM wildPokemon JOIN pokemon WHERE wildPokemon.thisPokemon=' + wID + ' AND pokemon.id=(SELECT generalPokemon from wildPokemon WHERE thisPokemon=' + wID + ')')
         wildPokemon.on('error', function(err){
             console.log('error:', err);
         });
@@ -246,8 +247,8 @@ io.sockets.on('connection', function (socket){
             'trainerPokemon.move2=moves.id AND trainerPokemon.trainerID=' + tID + ') AS move2N, (SELECT name from moves' +
             ' JOIN trainerPokemon where trainerPokemon.move3=moves.id AND trainerPokemon.trainerID=' + tID + ') AS move3N, ' +
             '(SELECT name from moves JOIN trainerPokemon where trainerPokemon.move4=moves.id AND trainerPokemon.trainerID=' +
-            tID + ') AS move4N, trainerPokemon.move1PP, trainerPokemon.move2PP, trainerPokemon.move3PP, trainerPokemon.move4PP ' +
-            'FROM trainerPokemon JOIN pokemon WHERE trainerPokemon.thisPokemon=(SELECT thisPokemon FROM trainerPokemon WHERE ' +
+            tID + ') AS move4N, trainerPokemon.move1PP, trainerPokemon.move2PP, trainerPokemon.move3PP, trainerPokemon.move4PP, ' +
+            'trainerPokemon.thisPokemon FROM trainerPokemon JOIN pokemon WHERE trainerPokemon.thisPokemon=(SELECT thisPokemon FROM trainerPokemon WHERE ' +
             'trainerID=' + tID + ' LIMIT 1) AND pokemon.id=trainerPokemon.generalPokemon')
         yourPokemon.on('error', function(err){
             console.log('error:', err);
@@ -258,13 +259,19 @@ io.sockets.on('connection', function (socket){
             yourArr = [result.name, result.imgUrl, result.level, result.maxHp, result.curHp,
                 result.move1, result.move2, result.move3, result.move4,
                 result.move1N, result.move2N, result.move3N, result.move4N,
-                result.move1PP, result.move2PP, result.move3PP, result.move4PP];
+                result.move1PP, result.move2PP, result.move3PP, result.move4PP, result.thisPokemon];
         });
 
         yourPokemon.on('end', function(result){
             socket.emit('returnedYours', yourArr);
             //callback();
         });
+    })
+    socket.on('doDmgToWild', function(trainerPokemon, wildPokemon, moveID){
+        var damage;
+        connection.query('CALL getDmgToWild(' + trainerPokemon + ', ' + wildPokemon + ', ' + moveID + ')');
+        socket.emit('updateHp');
+
     })
 });
 

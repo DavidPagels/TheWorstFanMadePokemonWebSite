@@ -1,13 +1,43 @@
-#challengingPokemon {
-    position:absolute;
+.wild{
+    position: absolute;
+    height: 50%;
+    width: 30%;
+    border: 2px solid;
     left: 20%;
     top: 20%;
 }
 
-#yourPokemon {
-    position:absolute;
+.trainer {
+    position: absolute;
+    height: 50%;
+    width: 30%;
+    border: 2px solid;
     right: 20%;
     top: 20%;
+}
+
+/*.nonBattle:hover {*/
+    /*background-color: lightgrey;*/
+/*}*/
+
+#challengingPokemon {
+    position:absolute;
+    left: 0%;
+    height:85%;
+    width: 20%;
+}
+
+#yourPokemon {
+    position:absolute;
+    right: 0%;
+    height:85%;
+    width: 20%;
+}
+
+#yImage {
+    position: absolute;
+    right:50%;
+    bottom: 20%;
 }
 
 #cImage {
@@ -16,19 +46,32 @@
     -o-transform: scale(-1, 1);
     transform: scale(-1, 1);
     filter: FlipH;
+    position: absolute;
+    left:50%;
+    bottom: 20%;
 }
 
 .battle {
 
 }
 
+.thePokemon {
+    position: absolute;
+    left:20%;
+    right: 20%;
+    height: 85%;
+}
+
 .battleText {
     position: absolute;
+    background-color: white;
     /*padding-top: 2%;*/
     /*padding-bottom:2%;*/
+    height: 15%;
     left: 20%;
     right: 20%;
     bottom: 10%;
+    overflow: hidden;
 }
 
 .battleBox {
@@ -37,7 +80,9 @@
 }
 
 .battleOptions {
-    position: relative;
+    position: absolute;
+    background-color: white;
+    height: 100%;
     left: 30%;
     right: 0%;
     top: 0%;
@@ -45,32 +90,40 @@
 }
 
 #option1 {
-    position: relative;
+    position: absolute;
+    height: 50%;
     left: 0%;
     right: 50%;
     bottom: 50%;
     top: 0%;
 }
 #option2 {
-    position: relative;
+    position: absolute;
+    height: 50%;
     left: 50%;
     right: 0%;
     bottom: 50%;
     top: 0%;
 }
 #option3 {
-    position: relative;
+    position: absolute;
+    height:50%;
     left: 0%;
     right: 50%;
     bottom: 0%;
     top: 50%;
 }
 #option4 {
-    position: relative;
+    position: absolute;
+    height:50%;
     left: 50%;
     right: 0%;
     bottom: 0%;
     top: 50%;
+}
+
+.options:hover {
+    background-color: lightgray;
 }
 
 #rightcolumn {
