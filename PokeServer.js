@@ -304,6 +304,11 @@ io.sockets.on('connection', function (socket){
     socket.on('deletePokemon', function(wPokeID){
         connection.query('DELETE FROM wildPokemon WHERE thisPokemon=' + wPokeID);
     })
+
+    socket.on('winBattleW', function(tPokeID, wPokeID){
+        connection.query('CALL winBattleW(' + tPokeID + ', ' + wPokeID + ')')
+        connection.query('DELETE FROM wildPokemon WHERE thisPokemon=' + wPokeID);
+    })
 });
 
 function getTrainerName(socket, trainerID){

@@ -30,7 +30,7 @@
 
         function win(){
             alert('You Won!');
-            iosocket.emit('deletePokemon', wPokemonN[1])
+            iosocket.emit('winBattleW', yPokemonN[1], wPokemonN[1]);
             $('.battle').fadeOut(function (){$('.nonBattle').fadeIn()});
         }
 
