@@ -18,6 +18,10 @@
 
         var iosocket = io.connect('http://localhost:3000');
 
+        function runAway(){
+            iosocket.emit('deletePokemon', wPokemonN[1])
+            window.location.href('/BattlePage');
+        }
         function lose(){
             alert('You Lost!');
             iosocket.emit('deletePokemon', wPokemonN[1])
@@ -30,8 +34,8 @@
             $('.battle').fadeOut(function (){$('.nonBattle').fadeIn()});
         }
 
-        function catchWild(){
-
+        function useItem(){
+            iosocket.emit('catchPokemon', getCookie('trainerID'), wPokemonN[1], 0)
         }
 
         function startBattle(){
