@@ -32,7 +32,6 @@
         }
 
         iosocket.on('setStarters', function(theStarters){
-            console.log('in set')
             var otherString = "'" + theStarters[1] + "'";
             $('#positionStarters').append(
                     '<div onclick="choosePokemon(' + theStarters[0] +  ', ' + otherString + ')" class="col-md-4 pokemen">' +

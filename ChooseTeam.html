@@ -17,10 +17,23 @@
 
         $(function(){
 
+            $('#pokeTeam, #theRest').sortable({
+                connectWith: $(".connected"),
+                update: function(event, ui) {
+                    if ($(this).children().length > 6) {
+                        $(ui.sender).sortable('cancel');
+                    } else {
+                        var theTeam = $('#pokeTeam').sortable("toArray");
+                        var notTeam = $('#theRest').sortable("toArray");
+                        iosocket.emit('setOrder', getCookie('trainerID'), theTeam, notTeam);
+                    }
+                }
+            });
+
             if(getCookie('trainerID') == null)
                 window.location.href='/'
             else
-                iosocket.emit('getTrainerPokemon', getCookie('trainerID'));
+                iosocket.emit('getAllTrainerPokemon', getCookie('trainerID'));
         })
 
         function getCookie(name) {
@@ -29,21 +42,19 @@
             return (result === null) ? null : result[1];
         }
 
-        iosocket.on('returnedPokemon', function (trainerPokemon){
-            $('#pokePictures').html('');
+        iosocket.on('returnedPokemon', function (trainerPokemon, otherPokemon){
+            $('#pokeTeam').html('');
             var divider = trainerPokemon.length;
             for(var position = 0; position < trainerPokemon.length && position < 6; position++){
                 var poke = trainerPokemon[position];
-                $('#pokePictures').append('<li id="pokemen" class="col-md-2 col-mid-offset-' + position * (12/divider) + '">' +
-                                          '<img src="' + poke[0] + '" class="imgClass" style="max-width:100%;max-height:100%;">' +
-                                          '<h3>' + poke[1] + '</h3>' +
-                                          '<h3>Level: ' + poke[2] + '</h3>' +
-                                          '<h4>HP: </h4><meter style="width:75%" value="' + poke[3] + '" min="0" max="' + poke[4] + '"></meter><h4>' + poke[3] + '/' + poke[4] + '</h4>' +
-                                          '<h4>Attack: ' + poke[5] + '</h4>' +
-                                          '<h4>Defense: ' + poke[6] + '</h4>' +
-                                          '<h4>Special: ' + poke[7] + '</h4>' +
-                                          '<h4>Speed: ' + poke[8] + '</h4></li>')
+                $('#pokeTeam').append('<li class="pokemen" id="' + poke[1] + '">' +
+                        '<img src="' + poke[0] + '" class="imgClass" style="max-width:100%;max-height:100%;"></li>')
 
+            }
+            for(var position = 0; position < otherPokemon.length; position++){
+                var poke = otherPokemon[position];
+                $('#theRest').append('<li class="pokemen" id="' + poke[1] + '">' +
+                        '<img src="' + poke[0] + '" class="imgClass" style="max-width:100%;max-height:100%;"></li>')
             }
 
         });
@@ -69,7 +80,10 @@
 </script>
 <div id="trainerss"></div>
 <h2 class="blockFont"><div id="trainerName">Your</div> Pokemon</h2>
-<ul id="pokePictures" class="row-fluid blockFont connectedSortable" style="list-style-type: none;"></ul>
+<div>
+<ul id="pokeTeam" class='connected' style="list-style-type: none;"></ul>
+<ul id="theRest" class='connected' style="list-style-type: none;"></ul>
+    </div>
 <div id="footer"></div>
 <script type="text/javascript">
     $(function() {

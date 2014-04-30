@@ -1,4 +1,23 @@
 <link href="trainerStyle.css" type="text/css" rel="stylesheet">
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    //var iosocket = io.connect('http://localhost:3000');
+    function healPokemon(){
+        if(getCookie('trainerID') == null)
+            alert('Please Log In!');
+        else{
+            iosocket.emit('healPokemon', getCookie('trainerID'));
+            alert('Pokemon Healed!');
+        }
+
+    }
+
+    function getCookie(name) {
+        var regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
+        var result = regexp.exec(document.cookie);
+        return (result === null) ? null : result[1];
+    }
+</script>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <ul class="nav navbar-nav">
@@ -13,6 +32,12 @@
             </li>
             <li>
                 <a href="/BattlePage">Battle</a>
+            </li>
+            <li>
+                <a onclick="healPokemon()">Pokemon Center</a>
+            </li>
+            <li>
+                <a href="/ChooseTeam">Choose Team</a>
             </li>
         </ul>
     </div>

@@ -14,7 +14,7 @@
         var creating = false;
 
         function checkFree(){
-            console.log($('#username').val());
+
             if(creating)
                 iosocket.emit('checkTrainers', $('#username').val());
         }
@@ -53,11 +53,11 @@
         })
 
         iosocket.on('logIn', function(correctPass, trainerId){
-            console.log(correctPass);
+
             if(correctPass){
-                console.log(trainerId)
+
                 document.cookie = "trainerID=" + trainerId + "; path='/'";
-                console.log(trainerId)
+
                 if(creating)
                     window.location.href = '/SelectStarter';
                 else

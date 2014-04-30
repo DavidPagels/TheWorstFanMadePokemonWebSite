@@ -20,7 +20,8 @@
 
         function runAway(){
             iosocket.emit('deletePokemon', wPokemonN[1])
-            window.location.href('/BattlePage');
+            alert("Ran away safely!");
+            $('.battle').fadeOut(function (){$('.nonBattle').fadeIn()});
         }
         function lose(){
             alert('You Lost!');
@@ -35,13 +36,21 @@
         }
 
         function useItem(){
-            iosocket.emit('catchPokemon', getCookie('trainerID'), wPokemonN[1], 0)
+            iosocket.emit('transferPokemon', getCookie('trainerID'), wPokemonN[1])
+            alert('You caught the Pokemon!');
+            $('.battle').fadeOut(function (){$('.nonBattle').fadeIn()});
+        }
+
+        function choosePokemon(pokemonID){
+            $('.battleOptions').show();
+            $('.PKMN').fadeOut();
+            iosocket.emit('getYourPokemon', pokemonID);
         }
 
         function startBattle(){
             $('.nonBattle').fadeOut(function (){ $('.battle').fadeIn()});
-            iosocket.emit('getChallenger');
-            iosocket.emit('getYourPokemon', getCookie('trainerID'));
+            iosocket.emit('getChallenger', getCookie('trainerID'));
+            iosocket.emit('getYourFirstPokemon', getCookie('trainerID'));
             inProgress = true;
         }
 
@@ -56,13 +65,18 @@
                 $('#option' + (i + 1)).html('<h2>' + checkNull(yMove[i][1]) + '</h2>');
                 if(yMove[i][1] !== null)
                     $('#option' + (i + 1)).attr('onclick', 'useMove(' + (i + 1) + ')');
+                else
+                    $('#option' + (i + 1)).attr('onclick', '');
             }
         }
 
+        function pkmn () {
+            iosocket.emit('getTrainerPokemonBattle', getCookie('trainerID'));
+        }
+
+
         function checkNull(theString){
-            console.log(theString);
             if(theString == null){
-                console.log('in')
                 return '--';
             }
             else{
@@ -84,7 +98,6 @@
             $('#option2').attr('onclick', 'pkmn()');
             $('#option3').attr('onclick', 'useItem()');
             $('#option4').attr('onclick', 'runAway()');
-            console.log(yPokemonN[1] + ', ' +  wPokemonN[1] + ', ' + yMove[movePlacement - 1][0]);
 
             setTimeout (function () {
                 iosocket.emit('doDmg', yPokemonN[1], wPokemonN[1], yMove[movePlacement - 1][0], 0);
@@ -92,9 +105,8 @@
             var move;
 
             setTimeout (function (){
-                console.log(numCMoves)
                 move = Math.floor(Math.random()*numCMoves)
-                console.log(move)
+
                 $('#cImage').animate({left: "-=10%"}, "fast", function (){ $('#cImage').animate({left: "+=10%"}, "fast",
                         function (){ $('#cImage').animate({left: "-=10%"}, "fast", function (){ $('#cImage').animate({left: "+=10%"}, "fast")})})})
                 $('#currentText').html(wPokemonN[0] + ' used ' + cMove[move][1])
@@ -129,7 +141,6 @@
             for(var i=3; i>=0; i--)
                 if(cMove[i][2] !== null)
                     numCMoves++;
-            console.log(numCMoves)
 
             setTimeout(function (){ $('.battleOptions').show(); }, 3000)
         })
@@ -163,6 +174,19 @@
             }
         })
 
+        iosocket.on('setPKMN', function(pokemon){
+            var i = 1;
+            $('.battleOptions').hide();
+
+            pokemon.forEach(function(element){
+                $('#PKMN' + i).fadeIn();
+                $('#PKMN' + i).attr("onclick", 'choosePokemon(' + element[1] + ')');
+                $('#PKMN' + i).text(element[0]);
+
+                i++;
+            })
+        })
+
     </script>
 </head>
 <body class="container">
@@ -173,9 +197,9 @@
     });
 </script>
 <div class="nonBattle wildTrainer">
-<div class='nonBattle wtContent divChoice wild' onClick="startBattle()">Wild</div>
-<div class="nonBattle wtContent divChoice trainer">Trainer</div>
-    </div>
+    <div class='nonBattle wtContent divChoice wild' onClick="startBattle()">Wild</div>
+    <div class="nonBattle wtContent divChoice trainer">Trainer</div>
+</div>
 <div class="thePokemon">
     <div id="challengingPokemon" class="battle" style="display:none;">
         <div id="challengePokeInfo">
@@ -194,6 +218,14 @@
         <img id="yImage">
     </div>
 </div>
+<div id="PKMN">
+    <div id="PKMN6" class="battleBox PKMN divChoice" style="display:none"></div>
+    <div id="PKMN5" class="battleBox PKMN divChoice" style="display:none"></div>
+    <div id="PKMN4" class="battleBox PKMN divChoice" style="display:none"></div>
+    <div id="PKMN3" class="battleBox PKMN divChoice" style="display:none"></div>
+    <div id="PKMN2" class="battleBox PKMN divChoice" style="display:none"></div>
+    <div id="PKMN1" class="battleBox PKMN divChoice" style="display:none"></div>
+</div>
 <div id="textBox" align='center' class="battle battleBox battleText" style="display:none;">
     <h1 id="currentText"></h1>
     <div class="battleBox battleOptions" style="display:none;">
@@ -204,7 +236,7 @@
             <h2>PKMN</h2>
         </div>
         <div id="option3" onclick="useItem()" class="options battleBox">
-            <h2>ITEM</h2>
+            <h2>CATCH</h2>
         </div>
         <div id="option4" onclick="runAway()" class="options battleBox">
             <h2>RUN</h2>
