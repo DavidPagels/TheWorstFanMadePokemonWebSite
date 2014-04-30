@@ -169,7 +169,7 @@ io.sockets.on('connection', function (socket){
 
     socket.on('getTrainerPokemon', function(trainerID){
         var retPokeArray = new Array();
-        var getUrls = connection.query('SELECT imgUrl, pokemon.name, trainerPokemon.level, trainerPokemon.curHp, trainerPokemon.maxHp, trainerPokemon.attack, trainerPokemon.defense, trainerPokemon.special, trainerPokemon.speed FROM pokemon JOIN trainerPokemon WHERE pokemon.id = trainerPokemon.generalPokemon AND trainerPokemon.trainerID=' + trainerID + ' LIMIT 6');
+        var getUrls = connection.query('SELECT imgUrl, pokemon.name, trainerPokemon.level, trainerPokemon.curHp, trainerPokemon.maxHp, trainerPokemon.attack, trainerPokemon.defense, trainerPokemon.special, trainerPokemon.speed FROM pokemon JOIN trainerPokemon WHERE trainerPokemon.teamOrder>0 AND pokemon.id = trainerPokemon.generalPokemon AND trainerPokemon.trainerID=' + trainerID + ' ORDER BY teamOrder LIMIT 6');
         getTrainerName(socket, trainerID);
 
         getUrls.on('error', function(err){
@@ -279,11 +279,13 @@ io.sockets.on('connection', function (socket){
 
     socket.on('doDmg', function(AttackingPokemon, ReceivingPokemon, moveID, wOrT){
         var hps = [];
-        connection.query('CALL getDmgW(' + AttackingPokemon + ', ' + ReceivingPokemon + ', ' + moveID + ', ' + wOrT + ')');
+        var retMes;
+        connection.query('SET @messages=0');
+        connection.query('CALL getDmgW(' + AttackingPokemon + ', ' + ReceivingPokemon + ', ' + moveID + ', ' + wOrT + ', @messages)');
         if(wOrT == 0)
-            var newHps = connection.query('SELECT trainerPokemon.curHp, wildPokemon.curHp AS curHp2 FROM trainerPokemon JOIN wildPokemon WHERE trainerPokemon.thisPokemon=' + AttackingPokemon + ' AND wildPokemon.thisPokemon=' + ReceivingPokemon);
+            var newHps = connection.query('SELECT @messages AS retMess, trainerPokemon.curHp, wildPokemon.curHp AS curHp2 FROM trainerPokemon JOIN wildPokemon WHERE trainerPokemon.thisPokemon=' + AttackingPokemon + ' AND wildPokemon.thisPokemon=' + ReceivingPokemon);
         else
-            var newHps = connection.query('SELECT trainerPokemon.curHp, wildPokemon.curHp AS curHp2 FROM trainerPokemon JOIN wildPokemon WHERE trainerPokemon.thisPokemon=' + ReceivingPokemon + ' AND wildPokemon.thisPokemon=' + AttackingPokemon);
+            var newHps = connection.query('SELECT @messages AS retMess, trainerPokemon.curHp, wildPokemon.curHp AS curHp2 FROM trainerPokemon JOIN wildPokemon WHERE trainerPokemon.thisPokemon=' + ReceivingPokemon + ' AND wildPokemon.thisPokemon=' + AttackingPokemon);
         newHps.on('error', function(err){
             console.log("error: " + err)
         });
@@ -291,10 +293,11 @@ io.sockets.on('connection', function (socket){
         newHps.on('result', function(result){
             hps[0] = result.curHp;
             hps[1] = result.curHp2;
+            retMes= result.retMess
         });
 
         newHps.on('end', function(result){
-            socket.emit('updateHp', hps);
+            socket.emit('updateHp', hps, retMes);
         });
 
     })

@@ -20,9 +20,11 @@
             $('#pokeTeam, #theRest').sortable({
                 connectWith: $(".connected"),
                 update: function(event, ui) {
-                    if ($(this).children().length > 6) {
+                    if ($('#pokeTeam').children().length > 6 || $('#pokeTeam').children.length < 1) {
+                        console.log('in cancel')
                         $(ui.sender).sortable('cancel');
                     } else {
+                        console.log('in <= 6 ' + $(this).children().length)
                         var theTeam = $('#pokeTeam').sortable("toArray");
                         var notTeam = $('#theRest').sortable("toArray");
                         iosocket.emit('setOrder', getCookie('trainerID'), theTeam, notTeam);

@@ -12,8 +12,11 @@
 /*}*/
 
 body.trainer{
-    background-image:url('http://samluo.weebly.com/uploads/4/4/0/7/4407542/1785255_orig.png');
-    background-size: 100%;
+    background: url('http://samluo.weebly.com/uploads/4/4/0/7/4407542/1785255_orig.png') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 .blockFont{
@@ -69,8 +72,9 @@ div#positionStarters {
 }
 
 p#footer {
-    position: absolute;
+    position: fixed;
     bottom: 1%;
+    left: 25%
 }
 
 li {
@@ -84,9 +88,12 @@ li {
 
 #pokeTeam li{
     width: 15%;
-
 }
 
+#pokeTeam {
+    border: 2px solid;
+    border-radius: 7px;
+}
 #theRest li{
     width: 7%;
 }

@@ -160,10 +160,17 @@
             yMove[3] = [ yourPokemon[8], yourPokemon[12], yourPokemon[16]];
         })
 
-        iosocket.on('updateHp', function (theHps){
+        iosocket.on('updateHp', function (theHps, messages){
             $('#yourHp').attr("value", theHps[0]);
             $('#wildHp').attr("value", theHps[1]);
             $('#showHp').text(theHps[0])
+            if(messages % 2 == 0)
+                $('#currentText').append('<br>Critical Hit!');
+            if(messages % 3 == 0)
+                $('#currentText').append('<br>Super Effective!');
+            if(messages % 5 == 0)
+                $('#currentText').append("<br>It Wasn't Very Effective!");
+
             if(theHps[0] <= 0){
                 inProgress = false;
                 lose();
@@ -197,12 +204,12 @@
     });
 </script>
 <div class="nonBattle wildTrainer">
-    <div class='nonBattle wtContent divChoice wild' onClick="startBattle()">Wild</div>
-    <div class="nonBattle wtContent divChoice trainer">Trainer</div>
+    <div class='nonBattle wtContent divChoice wild blockFont' onClick="startBattle()">Wild</div>
+    <div class="nonBattle wtContent divChoice trainer blockFont">Trainer</div>
 </div>
 <div class="thePokemon">
     <div id="challengingPokemon" class="battle" style="display:none;">
-        <div id="challengePokeInfo">
+        <div id="challengePokeInfo" class="blockFont">
             <h2 id="cPokemonName"></h2>
             <h3 id="cLevel"></h3>
             <div id="cHp"></div>
@@ -210,7 +217,7 @@
         <img id="cImage" style="filter:FlipH">
     </div>
     <div id="yourPokemon" class="battle" align="right" style="display:none;">
-        <div id="yourPokeInfo">
+        <div id="yourPokeInfo" class="blockFont">
             <h2 id="yPokemonName"></h2>
             <h3 id="yLevel"></h3>
             <div id="yHp"></div>
