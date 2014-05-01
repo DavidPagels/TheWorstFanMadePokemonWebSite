@@ -19,6 +19,9 @@ body{
     width:100%;
 }
 .wild{
+    background: url('https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQqceqcodfj3_QW-ShnVcAs12ytd9KNh0rDcESUuEkKMrfPKceTmA') no-repeat;
+    background-size: 100%;
+    background-position: center bottom;
     position: absolute;
     height: 50%;
     width: 15%;
@@ -86,7 +89,7 @@ body{
     display: table-cell;
     text-align: center;
     vertical-align: middle;
-    background-color: white;
+    background-color: #18b9b3;
 
 }
 

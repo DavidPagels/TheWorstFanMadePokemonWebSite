@@ -24,13 +24,6 @@
             })
         });
 
-        function getSite(theData){
-
-        }
-
-        function dispPoke(){
-            iosocket.emit('doDatabaseStuff');
-        }
 
         function getPokeInfo(){
             iosocket.emit('getPicture', $('#pokemonSelector').val())
@@ -40,7 +33,7 @@
             availableTags = pokemon;
             $("#pokemonSelector").autocomplete({source: availableTags, messages: {
                 noResults: '',
-                        results: function() {}
+                results: function() {}
             }});
             getPokeInfo();
         });
@@ -76,15 +69,15 @@
         <input type='text' id='pokemonSelector'/>
         <button class='pokeButton' onClick="getPokeInfo()">Enter</button>
     </div>
-    <div class="blockFont">
-    <h2 id="theContents" align='center' class="pokeDat"></h2>
-    <div id="curPokemon" align="center" class="pokeDat"></div><br>
-    <div id="curDescription" align="center"></div>
-    <div class="pokedex">
-    <div id="curHeight" class="pokeDat"></div>
-    <div id="curWeight" class="pokeDat"></div>
+    <div id='allContents' class="blockFont">
+        <h2 id="theContents" align='center' class="pokeDat"></h2>
+        <div id="curPokemon" align="center" class="pokeDat"></div><br>
+        <div id="curDescription" align="center"></div>
+        <div class="pokedex">
+            <div id="curHeight" class="pokeDat"></div>
+            <div id="curWeight" class="pokeDat"></div>
         </div>
-        </div>
+    </div>
 </div>
 <div id="footer"></div>
 <script type="text/javascript">

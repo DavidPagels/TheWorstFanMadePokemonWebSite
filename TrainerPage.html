@@ -34,7 +34,7 @@
             var divider = trainerPokemon.length;
             for(var position = 0; position < trainerPokemon.length && position < 6; position++){
                 var poke = trainerPokemon[position];
-                $('#pokePictures').append('<li id="pokemen" class="col-md-2 col-mid-offset-' + position * (12/divider) + '">' +
+                $('#pokePictures').append('<div id="pokemen" class="col-md-2 col-mid-offset-' + position * 2 + '">' +
                                           '<img src="' + poke[0] + '" class="imgClass" style="max-width:100%;max-height:100%;">' +
                                           '<h3>' + poke[1] + '</h3>' +
                                           '<h3>Level: ' + poke[2] + '</h3>' +
@@ -42,7 +42,7 @@
                                           '<h4>Attack: ' + poke[5] + '</h4>' +
                                           '<h4>Defense: ' + poke[6] + '</h4>' +
                                           '<h4>Special: ' + poke[7] + '</h4>' +
-                                          '<h4>Speed: ' + poke[8] + '</h4></li>')
+                                          '<h4>Speed: ' + poke[8] + '</h4></div>')
 
             }
 

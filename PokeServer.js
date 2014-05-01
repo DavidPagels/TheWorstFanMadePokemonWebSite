@@ -400,7 +400,7 @@ function getLevel(tID, callback){
     });
 
     gettingID.on('result', function(result){
-        theLevel = result.level;
+        theLevel = result.level + ((Math.random() - .7) * 3);
     });
 
     gettingID.on('end', function(result){

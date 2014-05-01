@@ -1,15 +1,3 @@
-/*@font-face {*/
-    /*font-family: 'Pokemon';*/
-    /*src: url('BACKTO1982.TTF') format('truetype');*/
-    /*text-shadow: -1px -1px 2 #000,*/
-    /*1px -1px 2 #000,*/
-    /*-1px 1px 2 #000,*/
-    /*1px 1px 2 #000;*/
-    /*color: white;*/
-    /*font-weight: 900;*/
-    /*font-weight: normal;*/
-    /*font-style: normal;*/
-/*}*/
 
 body.trainer{
     background: url('http://samluo.weebly.com/uploads/4/4/0/7/4407542/1785255_orig.png') no-repeat center center fixed;
@@ -28,12 +16,18 @@ body.trainer{
     1px 1px 0 #000;
 }
 
+#allContents {
+    width: 100%;
+}
+
 .pokedex {
     background-color: white;
     position: absolute;
-    right: 20%;
+    top: 30%;
+    left: 65%;
     border:2px solid;
     border-radius: 10px;
+    border-color: black;
 
 }
 
